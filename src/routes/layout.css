@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@import '@catppuccin/tailwindcss/mocha.css';
+@import 'flag-icons/css/flag-icons.min.css';
+@plugin '@iconify/tailwind4' {
+	scale: 1.1;
+}
+
+@font-face {
+	font-family: 'comic-relief';
+	src: url('$lib/fonts/comic-relief/ComicRelief-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'courier-prime';
+	src: url('$lib/fonts/courier-prime/CourierPrime-Regular.ttf') format('truetype');
+}
+
+@theme {
+	--font-comic-relief: 'comic-relief', 'sans-serif';
+	--font-courier-prime: 'courier-prime', 'font-mono';
+
+	--color-obs-background: #1d1f26;
+	--color-obs-content: #272a33;
+	--color-obs-padding: #3c404d;
+}
+
+@layer base {
+	:root {
+		@apply bg-obs-background font-comic-relief text-ctp-text selection:bg-ctp-lavender/50;
+	}
+
+	body {
+		@apply m-0 flex h-screen w-full justify-center;
+	}
+
+	button {
+		@apply cursor-pointer;
+	}
+}
+
+@layer components {
+	.button {
+		@apply min-w-6 rounded-sm border-b-2 px-0.5 text-center text-black;
+	}
+
+	.button-container {
+		@apply flex flex-wrap gap-1;
+	}
+
+	.button-selected {
+		@apply border-ctp-lavender-950 bg-ctp-lavender;
+	}
+
+	.button-unselected {
+		@apply border-ctp-lavender-950/50 bg-ctp-lavender/35 hover:bg-ctp-lavender/85;
+	}
+
+	.button-remove {
+		@apply w-fit text-ctp-text/50 decoration-ctp-red hover:text-ctp-red hover:underline;
+	}
+
+	.input {
+		@apply rounded-sm border-b-2 border-ctp-lavender-950 bg-obs-padding/75 px-1 outline-none focus:border-ctp-lavender focus:bg-obs-padding;
+	}
+}
