@@ -1,42 +1,22 @@
-# sv
+# sooft
+<img width="1920" height="1032" alt="image" src="https://github.com/user-attachments/assets/463df1ed-57bd-4a7e-8fcd-e97a274f659f" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fffc59b5-51cf-4c35-a579-89784bf10dba" />
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## obs quickstart
+1. navigate to `Docks -> Custom Browser Docks`
+2. add [https://sooft.dreamyard.xyz](https://sooft.dreamyard.xyz)
+   <img width="787" height="218" alt="image" src="https://github.com/user-attachments/assets/568690dd-a249-4349-9f09-4d38c42a9ba3" />
+3. navigate to `Sources -> Add Source -> Browser`
+  <img width="612" height="716" alt="image" src="https://github.com/user-attachments/assets/54690b6e-7761-459b-bce0-8a1fb6702281" />
 
-## Creating a project
+5. add [https://sooft.dreamyard.xyz/overlay](https://sooft.dreamyard.xyz/overlay)
 
-If you're seeing this, you've probably already done this step. Congrats!
+that's all! you can access overlay controls in `Docks`
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.15.2 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" sveltekit-adapter="adapter:static" --install npm ./
-```
-
-## Developing
-
+## development
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
 ```sh
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+to add or remove settings to the overlay, see the `PersistentState` objects in [src/lib/storage.svelte.ts](src/lib/storage.svelte.ts), which pages can import.
