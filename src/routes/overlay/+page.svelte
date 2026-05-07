@@ -5,22 +5,22 @@
 </script>
 
 <!-- top bar -->
-<div class="relative flex h-32 w-full justify-between p-4">
+<div class="relative z-20 flex h-32 w-full justify-between p-4">
 	{#if settings.current.enableGradient}
 		<!-- gradients -->
 		{#if settings.current.enableTeamColors}
 			<div
-				class="absolute top-0 left-0 size-full bg-linear-to-r from-ctp-blue/35 via-black/35 to-ctp-red/35"
+				class="absolute top-0 left-0 size-full bg-linear-to-r from-ctp-blue/35 via-black/50 to-ctp-red/35"
 			></div>
 		{:else}
 			<div
-				class="absolute top-0 left-0 size-full bg-linear-to-r from-ctp-lavender/35 via-black/35 to-ctp-lavender/35"
+				class="absolute top-0 left-0 size-full bg-linear-to-r from-ctp-lavender/35 via-black/50 to-ctp-lavender/35"
 				style:filter={getFiltersStyle()}
 			></div>
 		{/if}
 	{:else}
 		<!-- transparent black bg -->
-		<div class="absolute top-0 left-0 size-full bg-black/35"></div>
+		<div class="absolute top-0 left-0 size-full bg-black/50"></div>
 	{/if}
 
 	{@render OverlayPlayer('leftPlayer')}
