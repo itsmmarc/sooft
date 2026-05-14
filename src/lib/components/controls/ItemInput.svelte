@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { items, type Items } from '$lib/storage.svelte';
+	import { items, type Items, type Player } from '$lib/storage.svelte';
 	import { slide } from 'svelte/transition';
 
 	type Props = {
@@ -17,8 +17,10 @@
 		onkeypress={(e) => {
 			if (e.key === 'Enter') {
 				const value = (e.target as HTMLInputElement).value;
-
-				if (item === 'flags' && value.length !== 2) return; // early return for flags
+				if (item === 'players') {
+					return;
+				}
+				// if (item === 'flags' && value.length !== 2) return; // early return for flags
 				(e.target as HTMLInputElement).value = '';
 				if (items.current[item].includes(value)) return; // early return for dupes
 				items.current[item].push(value);
@@ -28,13 +30,11 @@
 	<button
 		class="button-remove"
 		onclick={() => {
-			items.current[item] = [''];
+			if (item === 'players') {
+				items.current[item] = [{ name: '', score: 0 } as Player];
+			} else {
+				items.current[item] = [''];
+			}
 		}}>remove all</button
 	>
-	{#if item === 'flags'}
-		<!-- svelte-ignore a11y_consider_explicit_label -->
-		<a href="https://flagicons.lipis.dev/" target="_blank"
-			><span class="icon-[mdi--question-mark]"></span></a
-		>
-	{/if}
 </div>

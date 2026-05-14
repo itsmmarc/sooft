@@ -61,38 +61,10 @@
 	<div class="flex flex-col">
 		<!-- name -->
 		<span>player</span>
-		{#if items.current.names.length === 0}
+		{#if items.current.players.length === 0}
 			<span class="text-ctp-text/50">no players..</span>
 		{:else}
-			<PlayerItemList {sideKey} key="name" item="names" />
-		{/if}
-
-		<!-- avatars -->
-		{#if settings.current.enableAvatars}
-			<span>avatar</span>
-			{#if items.current.avatarURLs.length === 0}
-				<span class="text-ctp-text/50">no avatars..</span>
-			{:else}
-				<PlayerItemList {sideKey} key="avatarURL" item="avatarURLs" />
-			{/if}
-		{/if}
-
-		<!-- tags -->
-		{#if settings.current.enableTags}
-			<span>tag</span>
-			{#if items.current.tags.length === 0}
-				<span class="text-ctp-text/50">no tags..</span>
-			{:else}
-				<PlayerItemList {sideKey} key="tag" item="tags" />
-			{/if}
-		{/if}
-
-		<!-- flags -->
-		<span>flag</span>
-		{#if items.current.flags.length === 0}
-			<span class="text-ctp-text/50">no flags..</span>
-		{:else}
-			<PlayerItemList {sideKey} key="flag" item="flags" />
+			<PlayerItemList {sideKey} />
 		{/if}
 	</div>
 </div>

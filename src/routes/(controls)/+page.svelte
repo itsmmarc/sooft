@@ -5,6 +5,7 @@
 	import Checkbox from '$lib/components/controls/Checkbox.svelte';
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
 	import Player from '$lib/components/controls/Player.svelte';
+	import PlayerInput from '$lib/components/controls/PlayerInput.svelte';
 	import RangeInput from '$lib/components/controls/RangeInput.svelte';
 	import { getFiltersStyle } from '$lib/filters.svelte';
 	import {
@@ -17,6 +18,8 @@
 	} from '$lib/storage.svelte';
 
 	const fonts: Settings['font'][] = ['cause', 'comic-relief', 'courier-prime', 'fredoka', 'inter'];
+
+	let openPlayerInput = false;
 	/* font safelist
 font-cause
 font-comic-relief
@@ -27,6 +30,7 @@ font-inter
 </script>
 
 <span class="self-center">sooft controls</span>
+
 <!-- links -->
 <div class="absolute right-4 flex flex-row-reverse gap-1">
 	<a class="opacity-50 hover:opacity-100" href="https://ko-fi.com/mkgzr" target="_blank">
@@ -40,7 +44,7 @@ font-inter
 
 <!-- items -->
 <Accordion title="items">
-	<ItemInput placeholder="add name" item="names" />
+	<!-- <ItemInput placeholder="add name" item="names" />
 	{#if settings.current.enableAvatars}
 		<ItemInput placeholder="add avatar URL" item="avatarURLs" />
 	{/if}
@@ -49,7 +53,8 @@ font-inter
 	{/if}
 	{#if settings.current.enableFlags}
 		<ItemInput placeholder="add flag (alpha-2 code)" item="flags" />
-	{/if}
+	{/if} -->
+	<PlayerInput />
 	<ItemInput placeholder="add map" item="maps" />
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>

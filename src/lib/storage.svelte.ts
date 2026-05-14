@@ -15,13 +15,22 @@ export type Settings = {
 	enablePOVGuide: boolean;
 };
 
+export type Rank = {
+	soldier: number;
+	demo: number;
+	overall: number;
+};
+
 export type Player = {
 	name: string;
-	avatarURL: string;
-	tag: string;
-	flag: string;
+	avatarURL?: string;
+	tag?: string;
+	flag?: string;
+	pr?: string;
+	rank?: Rank;
+	numWRs?: number;
+	bestRun?: string;
 	score: number;
-	pr: string;
 };
 
 export type Overlay = {
@@ -33,10 +42,7 @@ export type Overlay = {
 };
 
 export type Items = {
-	names: Array<string>;
-	avatarURLs: Array<string>;
-	tags: Array<string>;
-	flags: Array<string>;
+	players: Player[];
 	maps: Array<string>;
 	stages: Array<string>;
 };
@@ -83,10 +89,7 @@ export const overlay = new PersistentState('overlay', {
 
 // overlay items
 export const items = new PersistentState('items', {
-	names: [],
-	avatarURLs: [],
-	tags: [],
-	flags: [],
+	players: [],
 	maps: [],
 	stages: defaultStages
 } as Items);

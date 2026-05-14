@@ -90,3 +90,13 @@
 		mask-position: -192px -96px;
 	}
 }
+
+/* source: https://www.geeksforgeeks.org/css/how-to-remove-arrow-on-input-type-number-with-tailwind-css/ */
+.remove-arrow::-webkit-inner-spin-button,
+.remove-arrow::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.remove-arrow {
+	-moz-appearance: textfield;
+}
