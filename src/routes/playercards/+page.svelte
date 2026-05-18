@@ -41,7 +41,7 @@
 	{#if player.name === '' || player == null}
 		<div>no player</div>
 	{:else}
-		<section class="relative z-10 flex h-full flex-col flex-wrap gap-4">
+		<section class="relative z-10 flex h-full w-2/5 flex-col flex-wrap gap-4">
 			<div class="flex justify-end gap-3 {sideKey === 'rightPlayer' ? 'flex-row-reverse' : ''}">
 				<!-- name -->
 				<div
@@ -85,37 +85,39 @@
 			</div>
 
 			<div class="flex justify-end gap-3 {sideKey === 'rightPlayer' ? 'flex-row-reverse' : ''}">
-				<div class="h-fit text-center">
-					<h1 class="text-5xl font-bold">achievments</h1>
-					<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
-					<dl class="grid grid-cols-2 gap-2 text-3xl">
-						<dt>best run</dt>
-						<dd class="order-3">{player.bestRun}</dd>
-						<dt class="order-2">WRs</dt>
-						<dd class="order-4">{player.numWRs}</dd>
-					</dl>
+				<!-- info -->
+				<div>
+					<div class=" h-fit">
+						<h1 class="text-center text-3xl">achievements</h1>
+						<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+
+						<dl class="grid grid-cols-[10vw_10vw] gap-2 text-4xl">
+							<dt>best run</dt>
+							<dd>{player.bestRun}</dd>
+							<dt>WRs</dt>
+							<dd>{player.numWRs}</dd>
+						</dl>
+					</div>
+
+					<div class="mt-10 h-fit">
+						<h1 class="text-center text-3xl">notes</h1>
+						<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+
+						<div class="text-4xl">{player.note}</div>
+					</div>
 				</div>
 
 				<!-- ranks -->
-				<div class="h-fit w-80 text-center">
-					<h1 class="text-5xl font-bold">rank</h1>
-					<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
-					<dl class="grid grid-cols-3 gap-2 text-3xl">
-						<dt>overall</dt>
-						<dd class="order-4">{player.rank?.overall}</dd>
-						<dt class="order-2">soldier</dt>
-						<dd class="order-5">{player.rank?.soldier}</dd>
-						<dt class="order-3">demo</dt>
-						<dd class="order-6">{player.rank?.demo}</dd>
+				<div class="h-fit w-80 {sideKey === 'rightPlayer' ? 'text-left' : 'text-right'}">
+					<h1 class="text-5xl">ranks</h1>
+					<dl class="flex flex-col gap-2">
+						<dt class="text-4xl">soldier</dt>
+						<dd class="text-6xl font-bold">{player.rank?.soldier}</dd>
+						<dt class="text-4xl">demo</dt>
+						<dd class="text-4xl">{player.rank?.demo}</dd>
+						<dt class="text-4xl">overall</dt>
+						<dd class="text-4xl">{player.rank?.overall}</dd>
 					</dl>
-				</div>
-			</div>
-
-			<div class="flex justify-end gap-3 {sideKey === 'rightPlayer' ? 'flex-row-reverse' : ''}">
-				<div class="h-fit">
-					<h1 class="text-center text-5xl">notes</h1>
-					<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
-					<div class="text-3xl">{player.note}</div>
 				</div>
 			</div>
 		</section>
