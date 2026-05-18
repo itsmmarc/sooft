@@ -195,7 +195,7 @@ export const soldierPlayoffs2026 = {
 			},
 			numWRs: 148,
 			bestRun: 'jump_destination_v2',
-			note: 'buh (replace with image if possible)',
+			note: '<img src="https://cdn.7tv.app/emote/01J4YTP1E0000FXZ59PB5ZJ8KW/4x.avif" />', // find better quality if possible
 			favouriteMap: 'jump_atrial',
 			score: 0
 		},

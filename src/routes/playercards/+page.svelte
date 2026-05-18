@@ -103,7 +103,8 @@
 						<h1 class="text-center text-3xl">notes</h1>
 						<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
 
-						<div class="text-4xl">{player.note}</div>
+						<!-- okay for now since the app is client-side only, probably want to rework when (if) tempus api is implemented -->
+						<div class="text-4xl">{@html player.note}</div>
 					</div>
 				</div>
 
