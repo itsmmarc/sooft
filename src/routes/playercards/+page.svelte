@@ -87,8 +87,10 @@
 			<div class="flex justify-end gap-3 {sideKey === 'rightPlayer' ? 'flex-row-reverse' : ''}">
 				<!-- info -->
 
-				<div class="h-fit grow text-4xl {sideKey === 'rightPlayer' ? 'text-right' : 'text-left'}">
-					<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+				<div
+					class="h-fit grow text-4xl {sideKey === 'rightPlayer' ? 'text-right' : 'text-left'}"
+					style:filter={getFiltersStyle()}
+				>
 					<ul class="w-full">
 						<li class="m-10">{player.WRs} world records</li>
 						<li class="m-10">{player.TTs} top times</li>
@@ -106,17 +108,17 @@
 				</div>
 
 				<!-- ranks -->
-				<div class="h-fit w-80 text-center">
+				<div class="h-fit w-80 text-center" style:filter={getFiltersStyle()}>
 					{#if overlay.current.class == 'overall'}
 						<h1 class=" text-3xl">overall rank</h1>
-						<div class="text-8xl">#{player.rank!.overall}</div>
+						<div class="text-8xl font-bold">#{player.rank!.overall}</div>
 						<h1 class="text-3xl">soldier rank</h1>
-						<div class="text-8xl">#{player.rank!.soldier}</div>
+						<div class="text-8xl font-bold">#{player.rank!.soldier}</div>
 						<h1 class="text-3xl">demo rank</h1>
-						<div class="text-8xl">#{player.rank!.demo}</div>
+						<div class="text-8xl font-bold">#{player.rank!.demo}</div>
 					{:else}
 						<h1 class="text-3xl">{overlay.current.class} rank</h1>
-						<div class="text-8xl">#{player.rank![overlay.current.class]}</div>
+						<div class="text-8xl font-bold">#{player.rank![overlay.current.class]}</div>
 					{/if}
 				</div>
 			</div>

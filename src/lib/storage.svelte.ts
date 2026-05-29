@@ -475,7 +475,7 @@ export const defaultStages: Array<string> = [
 ];
 
 export const defaultSettings: Settings = {
-	font: 'cause',
+	font: 'font-space-grotesk',
 	hue: 0,
 	saturation: 100,
 	enableMovingBG: true,
@@ -524,6 +524,8 @@ export function loadSoldierPlayoffs2026() {
 	items.current.maps = soldierPlayoffs2026.maps;
 	overlay.current = defaultOverlay;
 	overlay.current.class = 'soldier';
+	settings.current.hue = 10;
+	settings.current.saturation = 100;
 }
 
 export function loadDemoPlayoffs2026() {
@@ -531,4 +533,6 @@ export function loadDemoPlayoffs2026() {
 	items.current.maps = demoPlayoffs2026.maps;
 	overlay.current = defaultOverlay;
 	overlay.current.class = 'demo';
+	settings.current.hue = 0;
+	settings.current.saturation = 140;
 }

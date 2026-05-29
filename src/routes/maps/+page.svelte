@@ -28,11 +28,16 @@
 		<!-- transparent black bg -->
 		<div class="absolute top-0 left-0 size-full bg-black/35"></div>
 	{/if}
-	<section class="flex flex-wrap justify-around">
+	<section class="flex flex-wrap justify-around gap-5 p-10">
 		{#each Object.entries(items.current.maps) as [key, map], i (i)}
 			{#if key !== 'null'}
-				<div class="@container relative mb-2 h-90 w-170 text-4xl">
-					<h1 class="absolute top-0 right-0 w-full p-2 text-center">{key}</h1>
+				<div class="@container relative mb-2 h-80 w-160 text-4xl">
+					<h1
+						class="absolute top-0 right-0 w-full p-2 text-center"
+						style:filter={getFiltersStyle()}
+					>
+						{key}
+					</h1>
 					<div
 						class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-t from-transparent via-transparent to-[#000000aa]"
 					></div>
