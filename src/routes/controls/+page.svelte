@@ -17,7 +17,9 @@
 		defaultStages,
 		defaultSettings,
 		fullReset,
-		loadSoldierPlayoffs2026
+		loadSoldierPlayoffs2026,
+		type TFClass,
+		TFClasses
 	} from '$lib/storage.svelte';
 	import * as _ from 'underscore';
 
@@ -169,15 +171,18 @@ font-inter
 {/if} -->
 
 <!-- classes -->
+<span>class</span>
 <div class="button-container">
-	{#each ['soldier', 'demo'] as class, i (i)}
-		{@const selected = overlay.current.class === class}
+	{#each Object.values(TFClasses) as tfClass, i (i)}
+		{@const selected = overlay.current.class === tfClass}
 		<Button
 			{selected}
 			onclick={() => {
-				overlay.current.class = class;
+				overlay.current.class = tfClass;
 			}}
-			</Button
+			oncontextmenu={() => {
+				return;
+			}}>{tfClass}</Button
 		>
 	{/each}
 </div>

@@ -45,10 +45,11 @@ export type MapsInfo<SoldierMapList> = {
 	[K in keyof SoldierMapList]: Map;
 };
 
+export const TFClasses = ['demo', 'soldier', 'overall'] as const;
+export type TFClass = (typeof TFClasses)[number];
+
 export type Rank = {
-	soldier: number;
-	demo: number;
-	overall: number;
+	[key in TFClass]: number;
 };
 
 export type Player = {
@@ -74,7 +75,7 @@ export type Overlay = {
 	rightPlayer: Player;
 	map: Map;
 	stage: string;
-	class: 'soldier' | 'demo';
+	class: TFClasses;
 };
 
 export type Items = {
@@ -196,7 +197,7 @@ export const soldierPlayoffs2026 = {
 			},
 			numWRs: 148,
 			bestRun: 'jump_destination_v2',
-			note: '<img src="https://cdn.7tv.app/emote/01J4YTP1E0000FXZ59PB5ZJ8KW/4x.avif" />', // find better quality if possible
+			note: '<img src="https://cdn.7tv.app/emote/01J4YTP1E0000FXZ59PB5ZJ8KW/4x.avif" class="rounded-xl object-cover w-full" />', // find better quality if possible
 			favouriteMap: 'jump_atrial',
 			score: 0
 		},
@@ -381,4 +382,6 @@ export function fullReset() {
 export function loadSoldierPlayoffs2026() {
 	items.current.players = soldierPlayoffs2026.players;
 	items.current.maps = soldierPlayoffs2026.maps;
+	overlay.current = defaultOverlay;
+	overlay.current.class = 'soldier';
 }
