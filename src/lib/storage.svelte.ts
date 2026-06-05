@@ -70,7 +70,7 @@ export type Player = {
 	name: string;
 	score: number;
 	tempusID?: string;
-	steamURL?: string;
+	steamID64?: string;
 	avatarURL?: string;
 	tag?: string;
 	flag?: string;
@@ -124,7 +124,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'vice',
 			tempusID: '10736',
-			steamURL: 'vicetfz',
+			steamID64: '76561198366368448',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/75f84c1f8d7956ad4521718c53c6a7b381e3acee_full.jpg',
 			tag: 'fuck vice',
@@ -149,7 +149,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Nikita',
 			tempusID: '602086',
-			steamURL: '76561199514776310',
+			steamID64: '76561199514776310',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/7e66f539d7f62409db0a6b9a39f5d7334d549a7a_full.jpg',
 			tag: '',
@@ -174,7 +174,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Garf',
 			tempusID: '579826',
-			steamURL: '76561199243400809',
+			steamID64: '76561199243400809',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/45005e86d752dcb1439be9c937ee1ce6e2b4d0ab_full.jpg',
 			tag: '',
@@ -199,7 +199,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'bunny.',
 			tempusID: '357942',
-			steamURL: 'HelmiBunny',
+			steamID64: '76561198201985399',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/5f84395a8424e7d4828f6b18c9cb90a12fa24ed4_full.jpg',
 			tag: '',
@@ -224,7 +224,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Sammy',
 			tempusID: '503501',
-			steamURL: 'samuelmiamuel',
+			steamID64: '76561199001307670',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/a5104f8172127271e4762fc0aa1112fc2b0a0f9f_full.jpg',
 			tag: '',
@@ -249,7 +249,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Hass',
 			tempusID: '31339',
-			steamURL: '76561198152719870',
+			steamID64: '76561198152719870',
 			avatarURL:
 				'https://shared.akamai.steamstatic.com/community_assets/images/items/1913420/1a5409eff27cdf6c32706526a68316820ca66835.gif',
 			tag: '',
@@ -274,7 +274,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Spidda',
 			tempusID: '24856',
-			steamURL: 'sleepyiscute',
+			steamID64: '76561198057436685',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/31f788519863b79f24b1604e090596ba6961a3ab_full.jpg',
 			tag: '',
@@ -361,7 +361,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'newjuls',
 			tempusID: '281915',
-			steamURL: 'newjuls',
+			steamID64: '76561198396018338',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/97c996f978b84083afc12e7713f9626cda82ff83_full.jpg',
 			tag: '',
@@ -385,7 +385,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'cander',
 			tempusID: '243670',
-			steamURL: 'vicebot',
+			steamID64: '76561198318722879',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/132bdddaf081fe2548a3503ed7058980cb189715_full.jpg',
 			tag: 'real vice',
@@ -409,7 +409,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'namee',
 			tempusID: '35454',
-			steamURL: 'NameeeX3',
+			steamID64: '76561198096062185',
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/265eb8e845c99da4e5cae4563163cb974c3d482e_full.jpg',
 			tag: '',
@@ -517,7 +517,7 @@ export const defaultItems: Items = {
 };
 
 // overlay settings
-export const settings = new PersistentState('settings', defaultSettings);
+export const settings = new PersistentState('settings', defaultSettings, 'localStorage');
 
 // overlay state
 export const overlay = new PersistentState('overlay', defaultOverlay);
