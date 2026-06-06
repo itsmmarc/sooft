@@ -71,6 +71,9 @@
 		{/key}
 	</div>
 
+	{#if settings.current.useWebSocket && settings.current.webSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
+		<WebSocketCheckpoints />
+	{/if}
 	<!-- map -->
 	<div
 		class="relative -right-6 flex h-full skew-x-30 items-center justify-end rounded-bl-xl border-b-4 border-l-4 border-ctp-lavender/50 bg-ctp-lavender/25
@@ -82,9 +85,6 @@
 			>
 		{/key}
 	</div>
-	{#if settings.current.useWebSocket && settings.current.webSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
-		<WebSocketCheckpoints />
-	{/if}
 </div>
 
 <!-- MARK: OverlayPlayer -->
