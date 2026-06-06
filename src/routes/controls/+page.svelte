@@ -22,7 +22,11 @@
 		Fonts,
 		type Font
 	} from '$lib/storage.svelte';
-	import { loadSoldierPlayoffs2026, loadDemoPlayoffs2026 } from '$lib/preset-data.svelte';
+	import {
+		loadSoldierPlayoffs2026,
+		loadDemoPlayoffs2026,
+		loadTestersPlayoffs2026
+	} from '$lib/preset-data.svelte';
 	import { slide } from 'svelte/transition';
 	import * as _ from 'underscore';
 	import icon_soldier from '$lib/assets/icon_soldier.png';
@@ -70,6 +74,9 @@
 			aria-label="load soldier playoffs 2026"
 			alt="load soldier playoffs 2026"
 		/>
+	</button>
+	<button class="hover:mix-blend-soft-light" onclick={() => loadTestersPlayoffs2026()}>
+		load<br />testers
 	</button>
 </div>
 
