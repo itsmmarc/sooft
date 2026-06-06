@@ -141,6 +141,28 @@ interface TimerCheckpointEvent extends BaseTimerEvent {
 	time: number;
 }
 
+// MARK: Competition
+// written by me for now, will get kingstripes' interfaces at some point
+interface BaseCompetitionEvent {
+	type: 'competition_session_live' | 'competition_session_overtime';
+	timestamp: number;
+	sessionId: number;
+	startedAt: number;
+	durationSeconds: number;
+}
+
+interface CompetitionLiveEvent extends BaseCompetitionEvent {
+	type: 'competition_session_live';
+	expiresAt: number;
+}
+// {"type":"competition_session_live","timestamp":1780753370,"sessionId":49,"startedAt":1780753370,"durationSeconds":60,"expiresAt":1780753430}
+
+interface CompetitionOvertimeEvent extends BaseCompetitionEvent {
+	type: 'competition_session_overtime';
+	expiredAt: 1780753430;
+}
+// {"type":"competition_session_overtime","timestamp":1780753430,"sessionId":49,"startedAt":1780753370,"durationSeconds":60,"expiredAt":1780753430}
+
 // MARK: Messages
 
 export type MessageTypes =
@@ -148,21 +170,20 @@ export type MessageTypes =
 	| TimerStartEvent
 	| TimerStopEvent
 	| TimerFinishEvent
-	| TimerCheckpointEvent;
+	| TimerCheckpointEvent
+	| CompetitionLiveEvent
+	| CompetitionOvertimeEvent;
 
 export type Messages = {
 	mapPicks: PickBansSessionStateEvent[];
 	timer: BaseTimerEvent[];
+	competition: BaseCompetitionEvent[];
 };
 
 export const defaultMessages = {
-	mapPicks: [
-		{
-			type: 'pickbans_session_state',
-			session: null
-		}
-	],
-	timer: []
+	mapPicks: [],
+	timer: [],
+	competition: []
 } as Messages;
 
 // test timer object - {"type":"timer_start","steamid":50734103,"track":0,"style":0,"timestamp":10000}

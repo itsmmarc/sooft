@@ -74,4 +74,14 @@
 			? rightTime
 			: csToTime(Math.trunc(timer.current.right.finishTime * 100))}</span
 	>
+	<div class="absolute top-5 flex flex-col">
+		{#if timer.current.competition.timeLeftSeconds > 0}
+			<div class="text-palewhite/40 text-center text-5xl">
+				{timer.current.competition.timeLeftSeconds}
+			</div>
+		{/if}
+		{#if timer.current.competition.overtime}
+			<div class="text-palewhite/40 text-center text-4xl">OVERTIME</div>
+		{/if}
+	</div>
 </div>

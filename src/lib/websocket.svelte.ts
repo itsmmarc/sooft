@@ -1,13 +1,10 @@
 import { PersistentState } from '@friendofsvelte/state';
 import { settings, overlay } from './storage.svelte';
-import {
-	type MessageTypes,
-	type PickBansSessionStateEvent,
-	defaultMessages
-} from './websocket-types';
+import { type BaseTimerEvent, type MessageTypes, defaultMessages } from './websocket-types';
 // import { SvelteMap } from 'svelte/reactivity';
 
 let ws: WebSocket;
+let competitionTimer: NodeJS.Timeout;
 export const messages = new PersistentState('messages', defaultMessages);
 
 export function initializeWebSocket() {
@@ -27,6 +24,7 @@ export function initializeWebSocket() {
 	ws.onmessage = function (event) {
 		const data: MessageTypes = JSON.parse(event.data);
 		console.log(data);
+		console.log(event.data);
 
 		switch (data.type) {
 			case 'pickbans_session_state':
@@ -47,20 +45,21 @@ export function initializeWebSocket() {
 			case 'timer_checkpoint':
 				timer_checkpoint(checkTimerSide(data), data.formattedCheckpoint, data.time);
 				break;
+			case 'competition_session_live':
+				competition_timer_start(data.durationSeconds);
+				messages.current.competition.push(data);
+				break;
+			case 'competition_session_overtime':
+				competition_timer_overtime(data.durationSeconds);
+				messages.current.competition.push(data);
+				break;
 			default:
 				return;
 		}
 	};
-
-	function checkTimerSide(data: Exclude<MessageTypes, PickBansSessionStateEvent>): string {
-		return data.steamid == overlay.current.leftPlayer.steamID3
-			? 'left'
-			: data.steamid == overlay.current.rightPlayer.steamID3
-				? 'right'
-				: '';
-	}
 }
 
+// MARK: Timer
 type Timer = {
 	timer_start: boolean;
 	timer_stop: boolean;
@@ -75,9 +74,26 @@ const defaultTimer = {
 	finishTime: 0
 } as Timer;
 
+type CompetitionTimer = {
+	timer_start: boolean;
+	durationSeconds: number;
+	timeLeftSeconds: number;
+	timer_stop: boolean; // not sure if this is needed
+	overtime: boolean;
+};
+
+const defaultCompetitionTimer = {
+	timer_start: false,
+	durationSeconds: 0,
+	timeLeftSeconds: 0,
+	timer_stop: false,
+	overtime: false
+};
+
 type TimerStore = {
 	left: Timer;
 	right: Timer;
+	competition: CompetitionTimer;
 	leftPr: number | null;
 	rightPr: number | null;
 	leftcps: any;
@@ -87,11 +103,20 @@ type TimerStore = {
 export const timer = new PersistentState('timer', {
 	left: defaultTimer,
 	right: defaultTimer,
+	competition: defaultCompetitionTimer,
 	leftPr: null,
 	rightPr: null,
 	leftcps: {},
 	rightcps: {}
 } as TimerStore);
+
+function checkTimerSide(data: BaseTimerEvent): string {
+	return data.steamid == overlay.current.leftPlayer.steamID3
+		? 'left'
+		: data.steamid == overlay.current.rightPlayer.steamID3
+			? 'right'
+			: '';
+}
 
 // don't start timer if already finished
 function timer_start(side: string) {
@@ -171,4 +196,34 @@ export function csToTime(cs: number) {
 		.padStart(2, '0');
 
 	return `${minutes}:${seconds}.${centiseconds}`;
+}
+
+// MARK: Competition
+function competition_timer_start(durationSeconds: number) {
+	if (timer.current.competition.timer_start) {
+		return;
+	}
+	timer.current.competition.durationSeconds = durationSeconds;
+	timer.current.competition.timeLeftSeconds = durationSeconds;
+
+	competitionTimer = setInterval(() => {
+		if (timer.current.competition.timeLeftSeconds > 0) {
+			timer.current.competition.timeLeftSeconds--;
+		} else {
+			competition_timer_stop();
+		}
+	}, 1000);
+}
+
+function competition_timer_stop() {
+	clearTimeout(competitionTimer);
+	timer.current.competition.timer_start = false;
+	timer.current.competition.timer_stop = true;
+}
+
+function competition_timer_overtime(durationSeconds: number) {
+	timer.current.competition.overtime = true;
+	setTimeout(() => {
+		timer.current.competition.overtime = false;
+	}, durationSeconds * 1000);
 }
