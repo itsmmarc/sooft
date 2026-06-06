@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { csToTime, leftCheckpointTimes, rightCheckpointTimes } from '$lib/websocket.svelte';
+	import { csToTime, timer } from '$lib/websocket.svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { slide, fade } from 'svelte/transition';
 	import { getFiltersStyle } from '$lib/filters.svelte';
@@ -10,11 +10,11 @@
 	function mergeCheckpoints(): SvelteMap<string, number> {
 		const merged: SvelteMap<string, number> = new SvelteMap([]);
 
-		for (const [checkpoint, time] of leftCheckpointTimes.entries()) {
+		for (const [checkpoint, time] of timer.current.leftcps.entries()) {
 			merged.set(checkpoint, time);
 		}
 
-		for (const [checkpoint, time] of rightCheckpointTimes.entries()) {
+		for (const [checkpoint, time] of timer.current.rightcps.entries()) {
 			if (merged.has(checkpoint)) {
 				if (merged.get(checkpoint)! > time) {
 					merged.set(checkpoint, time);
@@ -42,8 +42,8 @@
 					></span>
 				{/if}
 				<span class="flex">{csToTime(time * 100)}</span>
-				{#if leftCheckpointTimes.has(checkpoint) && rightCheckpointTimes.has(checkpoint)}
-					{#if leftCheckpointTimes.get(checkpoint)! < rightCheckpointTimes.get(checkpoint)!}
+				{#if timer.current.leftcps.has(checkpoint) && timer.current.rightcps.has(checkpoint)}
+					{#if timer.current.leftcps.get(checkpoint)! < timer.current.rightcps.get(checkpoint)!}
 						<span
 							transition:fade|global
 							class="bg-tempus-green/60 absolute rounded-lg px-2.5 {size > 14
@@ -51,7 +51,7 @@
 								: 'right-40 py-1 text-2xl'}"
 						>
 							{(
-								leftCheckpointTimes.get(checkpoint)! - rightCheckpointTimes.get(checkpoint)!
+								timer.current.leftcps.get(checkpoint)! - timer.current.rightcps.get(checkpoint)!
 							).toFixed(1)}
 						</span>
 					{:else}
@@ -62,7 +62,7 @@
 								: 'left-40 py-1 text-2xl'}"
 						>
 							{(
-								rightCheckpointTimes.get(checkpoint)! - leftCheckpointTimes.get(checkpoint)!
+								timer.current.rightcps.get(checkpoint)! - timer.current.leftcps.get(checkpoint)!
 							).toFixed(1)}
 						</span>
 					{/if}

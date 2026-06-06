@@ -92,7 +92,8 @@ interface WelcomeEvent {
 	timestamp: number; // Unix timestamp
 }
 
-type TimerEventType = 'timer_start' | 'timer_stop' | 'timer_finish';
+// modified, added timer_checkpoint
+type TimerEventType = 'timer_start' | 'timer_stop' | 'timer_finish' | 'timer_checkpoint';
 
 const STYLES = {
 	RocketJump: 0,
@@ -103,12 +104,14 @@ const STYLES = {
 } as const;
 type Style = (typeof STYLES)[keyof typeof STYLES];
 
-interface BaseTimerEvent {
+// modified
+export interface BaseTimerEvent {
 	type: TimerEventType;
 	steamid: number; // the ID portion of steamID3 format [U:1:50734103]
 	track: number; // 0 for main track, >0 is bonuses
 	style: Style;
 	timestamp: number; // Unix timestamp
+	tick?: number;
 }
 
 interface TimerStartEvent extends BaseTimerEvent {
@@ -131,7 +134,22 @@ interface TimerFinishEvent extends BaseTimerEvent {
 	maxvel: number; // max abs velocity float32
 }
 
+interface TimerCheckpointEvent extends BaseTimerEvent {
+	type: 'timer_checkpoint';
+	tick: number;
+	formattedCheckpoint: string;
+	time: number;
+}
+
 // MARK: Messages
+
+export type MessageTypes =
+	| PickBansSessionStateEvent
+	| TimerStartEvent
+	| TimerStopEvent
+	| TimerFinishEvent
+	| TimerCheckpointEvent;
+
 export type Messages = {
 	mapPicks: PickBansSessionStateEvent[];
 	timer: BaseTimerEvent[];
@@ -146,3 +164,5 @@ export const defaultMessages = {
 	],
 	timer: []
 } as Messages;
+
+// test timer object - {"type":"timer_start","steamid":50734103,"track":0,"style":0,"timestamp":10000}

@@ -72,7 +72,7 @@ export type Player = {
 	name: string;
 	score: number;
 	tempusID?: string;
-	steamID3?: string;
+	steamID3?: number;
 	avatarURL?: string;
 	tag?: string;
 	flag?: string;
@@ -127,7 +127,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'vice',
 			tempusID: '10736',
-			steamID3: '[U:1:406102720]',
+			steamID3: 406102720,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/75f84c1f8d7956ad4521718c53c6a7b381e3acee_full.jpg',
 			tag: 'fuck vice',
@@ -152,7 +152,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Nikita',
 			tempusID: '602086',
-			steamID3: '[U:1:1554510582]',
+			steamID3: 1554510582,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/7e66f539d7f62409db0a6b9a39f5d7334d549a7a_full.jpg',
 			tag: '',
@@ -177,7 +177,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Garf',
 			tempusID: '579826',
-			steamID3: '[U:1:1283135081]',
+			steamID3: 1283135081,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/45005e86d752dcb1439be9c937ee1ce6e2b4d0ab_full.jpg',
 			tag: '',
@@ -202,7 +202,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'bunny.',
 			tempusID: '357942',
-			steamID3: '[U:1:241719671]',
+			steamID3: 241719671,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/5f84395a8424e7d4828f6b18c9cb90a12fa24ed4_full.jpg',
 			tag: '',
@@ -227,7 +227,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Sammy',
 			tempusID: '503501',
-			steamID3: '[U:1:1041041942]',
+			steamID3: 1041041942,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/a5104f8172127271e4762fc0aa1112fc2b0a0f9f_full.jpg',
 			tag: '',
@@ -252,7 +252,7 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Hass',
 			tempusID: '31339',
-			steamID3: '[U:1:192454142]',
+			steamID3: 192454142,
 			avatarURL:
 				'https://shared.akamai.steamstatic.com/community_assets/images/items/1913420/1a5409eff27cdf6c32706526a68316820ca66835.gif',
 			tag: '',
@@ -277,7 +277,32 @@ export const soldierPlayoffs2026 = {
 		{
 			name: 'Spidda',
 			tempusID: '24856',
-			steamID3: '[U:1:97170957]',
+			steamID3: 97170957,
+			avatarURL:
+				'https://avatars.akamai.steamstatic.com/31f788519863b79f24b1604e090596ba6961a3ab_full.jpg',
+			tag: '',
+			flag: 'us',
+			rank: { overall: 23, soldier: 11, demo: 795 },
+			tempusPrs: {
+				pokus: { rank: 0, time: '' },
+				marigold: { rank: 0, time: '' },
+				phobos: { rank: 0, time: '' },
+				oddie: { rank: 0, time: '' },
+				ahh: { rank: 0, time: '' },
+				soar: { rank: 0, time: '' },
+				above: { rank: 0, time: '' }
+			},
+			WRs: 6,
+			TTs: 177,
+			bestRun: 'jump_descent',
+			note: '',
+			favouriteMap: '',
+			score: 0
+		},
+		{
+			name: 'kingstripes',
+			tempusID: '24856',
+			steamID3: 50734103,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/31f788519863b79f24b1604e090596ba6961a3ab_full.jpg',
 			tag: '',
@@ -371,7 +396,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'newjuls',
 			tempusID: '281915',
-			steamID3: '[U:1:435752610]',
+			steamID3: 435752610,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/97c996f978b84083afc12e7713f9626cda82ff83_full.jpg',
 			tag: '',
@@ -395,7 +420,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'cander',
 			tempusID: '243670',
-			steamID3: '[U:1:358457151]',
+			steamID3: 358457151,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/132bdddaf081fe2548a3503ed7058980cb189715_full.jpg',
 			tag: 'real vice',
@@ -419,7 +444,7 @@ export const demoPlayoffs2026 = {
 		{
 			name: 'namee',
 			tempusID: '35454',
-			steamID3: '[U:1:135796457]',
+			steamID3: 135796457,
 			avatarURL:
 				'https://avatars.akamai.steamstatic.com/265eb8e845c99da4e5cae4563163cb974c3d482e_full.jpg',
 			tag: '',

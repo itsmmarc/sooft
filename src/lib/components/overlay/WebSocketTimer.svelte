@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { leftTimer, rightTimer, resetTimer, resetPulse, csToTime } from '$lib/websocket.svelte';
+	import { timer, resetTimer, resetPulse, csToTime } from '$lib/websocket.svelte';
 	let leftCs = $state(0);
 	let rightCs = $state(0);
 	let leftTime = $derived(csToTime(leftCs));
@@ -18,7 +18,7 @@
 
 	$effect(() => {
 		// run is ongoing
-		if (leftTimer.timer_start) {
+		if (timer.current.left.timer_start) {
 			const startDate = Math.floor(Date.now() / 10);
 			const leftTimer = setInterval(() => {
 				leftCs = Math.floor(Date.now() / 10 - startDate);
@@ -32,7 +32,7 @@
 
 	$effect(() => {
 		// run is ongoing
-		if (rightTimer.timer_start) {
+		if (timer.current.right.timer_start) {
 			const startDate = Date.now() / 10;
 			const rightTimer = setInterval(() => {
 				rightCs = Math.floor(Date.now() / 10 - startDate);
@@ -45,13 +45,13 @@
 	});
 
 	$effect(() => {
-		if (leftTimer.timer_stop) {
+		if (timer.current.left.timer_stop) {
 			leftCs = 0;
 		}
 	});
 
 	$effect(() => {
-		if (rightTimer.timer_stop) {
+		if (timer.current.right.timer_stop) {
 			rightCs = 0;
 		}
 	});
@@ -59,17 +59,19 @@
 
 <div class="absolute flex h-32 w-full items-center justify-center gap-36">
 	<span
-		class="{!leftTimer.timer_start
+		class="{!timer.current.left.timer_start
 			? 'text-palewhite/40'
 			: 'text-palewhite'} font-chivomono text-center text-5xl transition-colors duration-1000"
-		>{!leftTimer.timer_finish ? leftTime : csToTime(Math.trunc(leftTimer.finishTime * 100))}</span
+		>{!timer.current.left.timer_finish
+			? leftTime
+			: csToTime(Math.trunc(timer.current.left.finishTime * 100))}</span
 	>
 	<span
-		class="{!rightTimer.timer_start
+		class="{!timer.current.right.timer_start
 			? 'text-palewhite/40'
 			: 'text-palewhite'} font-chivomono text-center text-5xl transition-colors duration-1000"
-		>{!rightTimer.timer_finish
+		>{!timer.current.right.timer_finish
 			? rightTime
-			: csToTime(Math.trunc(rightTimer.finishTime * 100))}</span
+			: csToTime(Math.trunc(timer.current.right.finishTime * 100))}</span
 	>
 </div>
