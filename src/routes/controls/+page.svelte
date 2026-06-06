@@ -44,8 +44,11 @@
 	<a class="opacity-50 hover:opacity-100" href="https://ko-fi.com/mkgzr" target="_blank">
 		<img class="size-8" src={kofi_symbol} alt="" />
 	</a>
+	<a class="opacity-50 hover:opacity-100" href="https://ko-fi.com/itsmmarc" target="_blank">
+		<img class="size-8" src={kofi_symbol} alt="" />
+	</a>
 	<!-- svelte-ignore a11y_consider_explicit_label -->
-	<a class="opacity-50 hover:opacity-100" href="https://github.com/spiritov/sooft" target="_blank">
+	<a class="opacity-50 hover:opacity-100" href="https://github.com/itsmmarc/sooft" target="_blank">
 		<span class="icon-[mdi--github] size-8 text-white"></span>
 	</a>
 </div>

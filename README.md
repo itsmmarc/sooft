@@ -6,12 +6,14 @@
 ## obs quickstart - links to be updated
 
 1. navigate to `Docks -> Custom Browser Docks`
-2. add [https://sooft.dreamyard.xyz/controls](https://sooft.dreamyard.xyz/controls)
+2. add [https://sooft.mmarc.net/controls](https://sooft.mmarc.net/controls)
    <img width="787" height="218" alt="image" src="https://github.com/user-attachments/assets/568690dd-a249-4349-9f09-4d38c42a9ba3" />
 3. navigate to `Sources -> Add Source -> Browser`
    <img width="612" height="716" alt="image" src="https://github.com/user-attachments/assets/54690b6e-7761-459b-bce0-8a1fb6702281" />
 
-4. add [https://sooft.dreamyard.xyz/overlay](https://sooft.dreamyard.xyz/overlay)
+4. add [https://sooft.mmarc.net/overlay](https://sooft.mmarc.net/overlay)
+5. add [https://sooft.mmarc.net/maps](https://sooft.mmarc.net/maps)
+6. add [hhttps://sooft.mmarc.net/playercards](https://sooft.mmarc.net/playercards)
 
 that's all! you can access overlay controls in `Docks`
 
