@@ -5,7 +5,7 @@ import {
 	type PickBansSessionStateEvent,
 	defaultMessages
 } from './websocket-types';
-import { SvelteMap } from 'svelte/reactivity';
+// import { SvelteMap } from 'svelte/reactivity';
 
 let ws: WebSocket;
 export const messages = new PersistentState('messages', defaultMessages);
@@ -26,35 +26,26 @@ export function initializeWebSocket() {
 	ws = new WebSocket(`https://console.jumpfortress.tf/?token=${settings.current.webSocketToken}`);
 	ws.onmessage = function (event) {
 		const data: MessageTypes = JSON.parse(event.data);
-		console.log('--------------------');
 		console.log(data);
-		console.log('--------------------');
-
-		console.log(timer.current.left);
-		console.log(timer.current.right);
 
 		switch (data.type) {
 			case 'pickbans_session_state':
 				messages.current.mapPicks.push(data);
 				break;
 			case 'timer_start':
-				console.log('--- I HAVE A TIMER START MESSAGE');
 				timer_start(checkTimerSide(data));
 				messages.current.timer.push(data);
 				break;
 			case 'timer_stop':
-				console.log('--- I HAVE A TIMER STOP MESSAGE');
 				timer_stop(checkTimerSide(data));
 				messages.current.timer.push(data);
 				break;
 			case 'timer_finish':
-				console.log('--- I HAVE A TIMER FINISH MESSAGE');
-				timer_finish(checkTimerSide(data), data.timestamp);
+				timer_finish(checkTimerSide(data), data.time);
 				messages.current.timer.push(data);
 				break;
 			case 'timer_checkpoint':
-				console.log('--- I HAVE A TIMER CHECKPOINT MESSAGE');
-				timer_checkpoint(checkTimerSide(data), data.formattedCheckpoint, data.timestamp);
+				timer_checkpoint(checkTimerSide(data), data.formattedCheckpoint, data.time);
 				break;
 			default:
 				return;
@@ -62,40 +53,51 @@ export function initializeWebSocket() {
 	};
 
 	function checkTimerSide(data: Exclude<MessageTypes, PickBansSessionStateEvent>): string {
-		console.log('checking side');
-		let key =
-			data.steamid == overlay.current.leftPlayer.steamID3
-				? 'left'
-				: data.steamid == overlay.current.rightPlayer.steamID3
-					? 'right'
-					: '';
-		console.log(key);
-		return key;
+		return data.steamid == overlay.current.leftPlayer.steamID3
+			? 'left'
+			: data.steamid == overlay.current.rightPlayer.steamID3
+				? 'right'
+				: '';
 	}
 }
+
+type Timer = {
+	timer_start: boolean;
+	timer_stop: boolean;
+	timer_finish: boolean;
+	finishTime: number;
+};
 
 const defaultTimer = {
 	timer_start: false,
 	timer_stop: false,
 	timer_finish: false,
 	finishTime: 0
+} as Timer;
+
+type TimerStore = {
+	left: Timer;
+	right: Timer;
+	leftPr: number | null;
+	rightPr: number | null;
+	leftcps: any;
+	rightcps: any;
 };
 
 export const timer = new PersistentState('timer', {
 	left: defaultTimer,
 	right: defaultTimer,
-	leftcps: new SvelteMap([]) as SvelteMap<string, number>,
-	rightcps: new SvelteMap([]) as SvelteMap<string, number>
-});
+	leftPr: null,
+	rightPr: null,
+	leftcps: {},
+	rightcps: {}
+} as TimerStore);
 
 // don't start timer if already finished
 function timer_start(side: string) {
-	console.log('enter timer_start function');
 	if (side === 'left' && !timer.current.left.timer_finish) {
 		Object.assign(timer.current.left, defaultTimer);
 		timer.current.left.timer_start = true;
-		console.log('--timer.current.left');
-		console.log(timer.current.left);
 	} else if (side === 'right' && !timer.current.right.timer_finish) {
 		Object.assign(timer.current.right, defaultTimer);
 		timer.current.right.timer_start = true;
@@ -104,16 +106,13 @@ function timer_start(side: string) {
 
 // don't stop timer if already finished
 function timer_stop(side: string) {
-	console.log('enter timer_stop function');
 	if (side === 'left' && !timer.current.left.timer_finish) {
 		Object.assign(timer.current.left, defaultTimer);
-		timer.current.leftcps.clear();
+		timer.current.leftcps = {};
 		timer.current.left.timer_stop = true;
-		console.log('--timer.current.left');
-		console.log(timer.current.left);
 	} else if (side === 'right' && !timer.current.right.timer_finish) {
 		Object.assign(timer.current.right, defaultTimer);
-		timer.current.leftcps.clear();
+		timer.current.leftcps = {};
 		timer.current.right.timer_stop = true;
 	}
 }
@@ -123,32 +122,36 @@ function timer_finish(side: string, finishTime: number) {
 		timer.current.left.timer_start = false;
 		timer.current.left.timer_finish = true;
 		timer.current.left.finishTime = finishTime;
-		timer.current.leftcps.set('finish', finishTime);
-		console.log('--timer.current.left');
-		console.log(timer.current.left);
+		if (!timer.current.leftPr || finishTime < timer.current.leftPr) {
+			timer.current.leftPr = finishTime;
+		}
+		Object.assign(timer.current.leftcps, { finish: finishTime });
 	} else {
 		timer.current.right.timer_start = false;
 		timer.current.right.timer_finish = true;
 		timer.current.right.finishTime = finishTime;
-		timer.current.rightcps.set('finish', finishTime);
+		if (!timer.current.rightPr || finishTime < timer.current.rightPr) {
+			timer.current.rightPr = finishTime;
+		}
+		Object.assign(timer.current.rightcps, { finish: finishTime });
 	}
 }
 
 function timer_checkpoint(side: string, checkpointName: string, checkpointTime: number) {
 	if (side === 'left') {
-		timer.current.leftcps.set(checkpointName, checkpointTime);
+		Object.assign(timer.current.leftcps, { [checkpointName]: checkpointTime });
 	} else {
-		timer.current.rightcps.set(checkpointName, checkpointTime);
+		Object.assign(timer.current.rightcps, { [checkpointName]: checkpointTime });
 	}
 }
 
 export function resetTimer(side: string) {
 	if (side === 'left') {
 		Object.assign(timer.current.left, defaultTimer);
-		timer.current.leftcps.clear();
+		timer.current.leftcps = {};
 	} else {
 		Object.assign(timer.current.right, defaultTimer);
-		timer.current.rightcps.clear();
+		timer.current.rightcps = {};
 	}
 }
 

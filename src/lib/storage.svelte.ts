@@ -76,7 +76,7 @@ export type Player = {
 	avatarURL?: string;
 	tag?: string;
 	flag?: string;
-	pr?: string;
+	pr?: string; // only used for manual PRs
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	tempusPrs?: MapPRs<any>;
 	rank?: Rank;

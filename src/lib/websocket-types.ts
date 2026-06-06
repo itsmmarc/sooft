@@ -166,3 +166,5 @@ export const defaultMessages = {
 } as Messages;
 
 // test timer object - {"type":"timer_start","steamid":50734103,"track":0,"style":0,"timestamp":10000}
+
+// test checkpoint object - {"type": "timer_checkpoint","steamid": 50734103,"track": 0,"style": 1,"formattedCheckpoint": "Checkpoint 1","time": 6.25499963760376,"timestamp": 1780761188,"tick": 2428}

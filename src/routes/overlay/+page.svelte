@@ -4,6 +4,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import WebSocketCheckpoints from '$lib/components/overlay/WebSocketCheckpoints.svelte';
 	import WebSocketTimer from '$lib/components/overlay/WebSocketTimer.svelte';
+	import { timer } from '$lib/websocket.svelte';
 </script>
 
 <!-- MARK: top bar -->
@@ -142,7 +143,18 @@
 					<span class="size-8 border-4 border-ctp-text/50"></span>
 				{/each}
 				<!-- PRs -->
-				{#if settings.current.enablePRs && overlay.current[sideKey].pr !== ''}
+				{#if settings.current.enablePRs && settings.current.useWebSocket}
+					<div class="flex gap-2">
+						<span class="text-2xl">pr</span>
+						<span class="font-courier-prime text-3xl"
+							>{sideKey == 'leftPlayer'
+								? timer.current.leftPr
+								: sideKey == 'rightPlayer'
+									? timer.current.rightPr
+									: ''}</span
+						>
+					</div>
+				{:else if settings.current.enablePRs && overlay.current[sideKey].pr !== ''}
 					<div class="flex gap-2">
 						<span class="text-2xl">pr</span>
 						<span class="font-courier-prime text-3xl">{overlay.current[sideKey].pr}</span>
