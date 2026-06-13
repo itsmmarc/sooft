@@ -109,6 +109,32 @@
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
+		<label for="tempusid" class="col-span-6">tempus ID</label>
+		<input
+			class="input col-span-4"
+			type="text"
+			id="tempusid"
+			placeholder="tempus id"
+			onkeyup={(e) => {
+				const value = (e.target as HTMLInputElement).value;
+				player.tempusID = value;
+			}}
+		/>
+
+		<label for="steamid3" class="col-span-6">steam ID3</label>
+		<input
+			class="input remove-arrow col-span-4"
+			type="number"
+			id="steamid3"
+			placeholder="steam id3"
+			onkeyup={(e) => {
+				const value = (e.target as HTMLInputElement).value;
+				player.steamID3 = parseInt(value);
+			}}
+		/>
+
+		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+
 		<label class="col-span-6" for="rank-overall">overall rank</label>
 		<input
 			class="remove-arrow input col-span-4"
