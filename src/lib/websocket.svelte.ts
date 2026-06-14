@@ -4,7 +4,7 @@ import { type BaseTimerEvent, type MessageTypes, defaultMessages } from './webso
 import { ProxyWebSocket } from './ProxyWebSocket';
 import { indexOf } from 'underscore';
 
-export let ws: ProxyWebSocket = new ProxyWebSocket(`https://console.jumpfortress.tf/?token=0`);
+export let ws: ProxyWebSocket;
 export const wsState = new PersistentState('wsState', { state: 0 }, 'sessionStorage');
 let competitionTimer: NodeJS.Timeout;
 export const messages = new PersistentState('messages', defaultMessages);
