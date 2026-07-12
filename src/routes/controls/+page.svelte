@@ -39,6 +39,7 @@
 		initializeWebSocket,
 		wsState
 	} from '$lib/websocket.svelte';
+	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
 
 	const fonts: Settings['font'][] = [...Fonts];
 	const monoFonts: Settings['monoFont'][] = [...MonoFonts];
@@ -46,6 +47,8 @@
 	if (settings.current.useWebSocket) {
 		initializeWebSocket();
 	}
+
+	let test = '';
 </script>
 
 <span class="self-center">sooft controls</span>
@@ -113,47 +116,11 @@
 		}}>reset to default</button
 	>
 	<span>page</span>
-	<div class="flex flex-wrap gap-1">
-		{#each OverlayPages as page, i (i)}
-			{@const selected = page === settings.current.overlayPage}
-			<div class={page}>
-				<Button
-					{selected}
-					onclick={() => {
-						settings.current.overlayPage = page as OverlayPage;
-					}}>{page === '' ? '✖' : page}</Button
-				>
-			</div>
-		{/each}
-	</div>
+	<RadioInputs name="pages" opts={[...OverlayPages]} bind:value={settings.current.overlayPage} />
 	<span>font</span>
-	<div class="flex flex-wrap gap-1">
-		{#each fonts as font, i (i)}
-			{@const selected = font === settings.current.font}
-			<div class={font}>
-				<Button
-					{selected}
-					onclick={() => {
-						settings.current.font = font as Font;
-					}}>{font.replace('font-', '')}</Button
-				>
-			</div>
-		{/each}
-	</div>
+	<RadioInputs name="fonts" opts={[...Fonts]} bind:value={settings.current.font} />
 	<span>mono font</span>
-	<div class="flex flex-wrap gap-1">
-		{#each monoFonts as font, i (i)}
-			{@const selected = font === settings.current.monoFont}
-			<div class={font}>
-				<Button
-					{selected}
-					onclick={() => {
-						settings.current.monoFont = font as MonoFont;
-					}}>{font.replace('font-', '')}</Button
-				>
-			</div>
-		{/each}
-	</div>
+	<RadioInputs name="mono fonts" opts={[...MonoFonts]} bind:value={settings.current.monoFont} />
 
 	<!-- color -->
 	<span>theme</span>
@@ -242,20 +209,12 @@
 <!-- overlay -->
 <div class="relative mb-2 flex w-full max-w-lg justify-center gap-1 self-center">
 	<span class="absolute left-0">best of</span>
-	{#key overlay.current.bestOf}
-		{@const bestOfOptions = [1, 3, 5, 7, 9]}
-		{#each bestOfOptions as bestOf, i (i)}
-			<!-- default bo3 -->
-			{@const selected = overlay.current.bestOf === bestOf}
-			<button
-				class="button w-6
-                                        {selected ? 'button-selected' : 'button-unselected'}"
-				onclick={() => {
-					overlay.current.bestOf = bestOf;
-				}}>{bestOf}</button
-			>
-		{/each}
-	{/key}
+	<RadioInputs
+		name="best of"
+		opts={[1, 3, 5, 7, 9]}
+		bind:value={overlay.current.bestOf}
+		log={true}
+	/>
 </div>
 
 <!-- players -->
@@ -269,61 +228,25 @@
 	<!-- maps -->
 
 	<span>map</span>
-	<div class="button-container">
-		{#each Object.entries(items.current.maps) as [key, map], i (i)}
-			{@const selected = overlay.current.map.shortName === map.shortName}
-			<Button
-				{selected}
-				onclick={() => {
-					overlay.current.map = map;
-				}}
-				oncontextmenu={() => {
-					if (map.fileName == '') {
-						return;
-					}
-					// reset if deleting selected
-					if (overlay.current.map.fileName === map.fileName) {
-						overlay.current.map = items.current.maps['null'];
-					}
-					items.current.maps = _.omit(items.current.maps, key);
-				}}>{map.shortName === '' ? '✖' : map.shortName}</Button
-			>
-		{/each}
-	</div>
+	<RadioInputs
+		name="maps"
+		opts={Object.values(items.current.maps)}
+		labelkey="shortName"
+		bind:value={overlay.current.map}
+		log={true}
+	/>
 
 	<!-- classes -->
 	<span>class</span>
-	<div class="button-container">
-		{#each Object.values(TFClasses) as tfClass, i (i)}
-			{@const selected = overlay.current.class === tfClass}
-			<Button
-				{selected}
-				onclick={() => {
-					overlay.current.class = tfClass as TFClass;
-				}}
-				oncontextmenu={() => {
-					return;
-				}}>{tfClass}</Button
-			>
-		{/each}
-	</div>
+	<RadioInputs name="classes" opts={[...TFClasses]} bind:value={overlay.current.class} />
 
 	<!-- bracket -->
 	<span>bracket display</span>
-	<div class="button-container">
-		{#each Object.values(BracketOptions) as bracketOption, i (i)}
-			{@const selected = overlay.current.bracket === bracketOption}
-			<Button
-				{selected}
-				onclick={() => {
-					overlay.current.bracket = bracketOption as BracketOption;
-				}}
-				oncontextmenu={() => {
-					return;
-				}}>{bracketOption}</Button
-			>
-		{/each}
-	</div>
+	<RadioInputs
+		name="bracketdisplay"
+		opts={[...BracketOptions]}
+		bind:value={overlay.current.bracket}
+	/>
 
 	<!-- stages -->
 	<div class="flex justify-between">
@@ -335,25 +258,5 @@
 			}}>reset to default</button
 		>
 	</div>
-	<div class="button-container">
-		{#each items.current.stages as stage, i (i)}
-			{@const selected = (overlay.current.stage ?? items.current.stages.at(0)) === stage}
-			<Button
-				{selected}
-				onclick={() => {
-					overlay.current.stage = stage;
-				}}
-				oncontextmenu={() => {
-					if (stage == '') {
-						return;
-					}
-					// reset if deleting selected
-					if (overlay.current.stage === stage) {
-						overlay.current.stage = items.current.stages.at(0) ?? '';
-					}
-					items.current.stages.splice(items.current.stages.indexOf(stage), 1);
-				}}>{stage == '' ? '✖' : stage}</Button
-			>
-		{/each}
-	</div>
+	<RadioInputs name="stages" opts={[...items.current.stages]} bind:value={overlay.current.stage} />
 </div>
