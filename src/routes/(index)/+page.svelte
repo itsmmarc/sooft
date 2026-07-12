@@ -27,16 +27,8 @@
 			<li>add overlay url</li>
 			<li>set width to 1920 and height to 1080</li>
 			<li>remove Custom CSS</li>
-			<li>repeat steps 2-4 for each overlay</li>
 		</ul>
-		<div class="grid grid-cols-3 pb-10">
-			{@render URLButton('match', 'overlay')}
-			{@render URLButton('maps', 'maps')}
-			{@render URLButton('player cards', 'playercards', true)}
-			{@render URLButton('players', 'players', true)}
-			{@render URLButton('bracket', 'bracket')}
-			{@render URLButton('thanks', 'thanks')}
-		</div>
+		{@render URLButton('match', 'overlay')}
 	</div>
 </main>
 

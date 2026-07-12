@@ -24,6 +24,17 @@ export const MonoFonts = [
 ] as const;
 export type MonoFont = (typeof MonoFonts)[number];
 
+export const OverlayPages = [
+	'',
+	'MatchOverlay',
+	'MapOverlay',
+	'BracketOverlay',
+	'PlayerCardOverlay',
+	'PlayerListOverlay',
+	'ThanksOverlay'
+] as const;
+export type OverlayPage = (typeof OverlayPages)[number];
+
 export type Settings = {
 	font: Font;
 	monoFont: MonoFont;
@@ -41,6 +52,7 @@ export type Settings = {
 	useShortMapNames: boolean;
 	useWebSocket: boolean;
 	webSocketToken: string;
+	overlayPage: OverlayPage;
 };
 
 // unused, intended for minimap
@@ -336,7 +348,8 @@ export const defaultSettings: Settings = {
 	enablePOVGuide: false,
 	useShortMapNames: true,
 	useWebSocket: false,
-	webSocketToken: ''
+	webSocketToken: '',
+	overlayPage: ''
 };
 
 export const defaultOverlay: Overlay = {

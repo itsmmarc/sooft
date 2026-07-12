@@ -24,7 +24,9 @@
 		MonoFonts,
 		type MonoFont,
 		BracketOptions,
-		type BracketOption
+		type BracketOption,
+		OverlayPages,
+		type OverlayPage
 	} from '$lib/storage.svelte';
 	import { loadSoldierPlayoffs2026, loadDemoPlayoffs2026 } from '$lib/preset-data.svelte';
 	import { slide } from 'svelte/transition';
@@ -110,6 +112,20 @@
 			settings.current = defaultSettings;
 		}}>reset to default</button
 	>
+	<span>page</span>
+	<div class="flex flex-wrap gap-1">
+		{#each OverlayPages as page, i (i)}
+			{@const selected = page === settings.current.overlayPage}
+			<div class={page}>
+				<Button
+					{selected}
+					onclick={() => {
+						settings.current.overlayPage = page as OverlayPage;
+					}}>{page === '' ? '✖' : page}</Button
+				>
+			</div>
+		{/each}
+	</div>
 	<span>font</span>
 	<div class="flex flex-wrap gap-1">
 		{#each fonts as font, i (i)}
