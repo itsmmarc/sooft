@@ -38,21 +38,20 @@
 	}
 
 	function getBestCheckpoints() {
-		let bestCps: number[] = [];
+		let newBestCps: number[] = [];
+
+		let cpOps: number[] = [];
 
 		for (let i = 0; i < size; i++) {
-			if (!leftCps[i] && !rightCps[i]) {
-				break;
-			} else if (leftCps[i] && !rightCps[i]) {
-				bestCps[i] = leftCps[i];
-			} else if (!leftCps[i] && rightCps[i]) {
-				bestCps[i] = rightCps[i];
-			} else {
-				bestCps[i] = leftCps[i] < rightCps[i] ? leftCps[i] : rightCps[i];
-			}
+			cpOps = [];
+			if (leftCps[i]) cpOps.push(leftCps[i]);
+			if (rightCps[i]) cpOps.push(rightCps[i]);
+			if (bestCps[i]) cpOps.push(bestCps[i]);
+
+			newBestCps[i] = Math.min(...cpOps);
 		}
 
-		return bestCps;
+		return newBestCps;
 	}
 </script>
 
