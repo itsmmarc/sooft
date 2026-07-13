@@ -15,7 +15,7 @@ export const MonoFonts = [
 	'font-dm-mono',
 	'font-anonymous-pro',
 	'font-ubuntu-mono',
-	'font-azaret-mono',
+	'font-azeret-mono',
 	'font-chivo-mono',
 	'font-spline-sans-mono'
 ] as const;
