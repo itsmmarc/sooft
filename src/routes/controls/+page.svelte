@@ -231,7 +231,7 @@
 	<RadioInputs
 		name="maps"
 		opts={Object.values(items.current.maps)}
-		labelkey="shortName"
+		labelkey={settings.current.useShortMapNames ? 'shortName' : 'fileName'}
 		bind:value={overlay.current.map}
 		log={true}
 	/>

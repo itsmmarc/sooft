@@ -427,7 +427,7 @@ export const soldierPlayoffs2026: {
 		}
 	],
 	maps: {
-		null: { filename: '', shortName: '' },
+		null: { fileName: '', shortName: '' },
 		pokus: {
 			fileName: 'jump_pokus_rc4',
 			shortName: 'pokus',
@@ -589,7 +589,7 @@ export const demoPlayoffs2026: {
 		}
 	],
 	maps: {
-		null: { filename: '', shortName: '' },
+		null: { fileName: '', shortName: '' },
 		tissue: {
 			fileName: 'jump_tissue',
 			shortName: 'tissue',
