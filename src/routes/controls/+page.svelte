@@ -28,11 +28,8 @@
 		OverlayPages,
 		type OverlayPage
 	} from '$lib/storage.svelte';
-	import { loadSoldierPlayoffs2026, loadDemoPlayoffs2026 } from '$lib/preset-data.svelte';
 	import { slide } from 'svelte/transition';
 	import * as _ from 'underscore';
-	import icon_soldier from '$lib/assets/icon_soldier.png';
-	import icon_demo from '$lib/assets/icon_demo.png';
 	import {
 		clearPicksAndBans,
 		clearTimer,
@@ -77,22 +74,6 @@
 			clearPicksAndBans();
 		}}>full settings reset</button
 	>
-	<button class="hover:mix-blend-soft-light" onclick={() => loadSoldierPlayoffs2026()}>
-		<img
-			src={icon_soldier}
-			class="size-12"
-			aria-label="load soldier playoffs 2026"
-			alt="load soldier playoffs 2026"
-		/>
-	</button>
-	<button class="hover:mix-blend-soft-light" onclick={() => loadDemoPlayoffs2026()}>
-		<img
-			src={icon_demo}
-			class="size-12"
-			aria-label="load soldier playoffs 2026"
-			alt="load soldier playoffs 2026"
-		/>
-	</button>
 </div>
 <div class="relative m-2 flex w-full max-w-lg justify-center gap-4 self-center">
 	<button class="button-remove" onclick={() => clearTimer()}>clear timers and checkpoints</button>
