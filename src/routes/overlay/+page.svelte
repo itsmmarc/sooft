@@ -8,7 +8,7 @@
 	import PlayerListOverlay from '$lib/overlays/PlayerListOverlay.svelte';
 	import ThanksOverlay from '$lib/overlays/ThanksOverlay.svelte';
 
-	let page = $derived(settings.current.overlayPage);
+	let page = $derived(settings.current.overlayScene);
 </script>
 
 {#if page == 'MatchOverlay'}

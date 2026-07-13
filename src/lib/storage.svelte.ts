@@ -21,7 +21,7 @@ export const MonoFonts = [
 ] as const;
 export type MonoFont = (typeof MonoFonts)[number];
 
-export const OverlayPages = [
+export const OverlayScenes = [
 	'',
 	'MatchOverlay',
 	'MapOverlay',
@@ -30,7 +30,7 @@ export const OverlayPages = [
 	'PlayerListOverlay',
 	'ThanksOverlay'
 ] as const;
-export type OverlayPage = (typeof OverlayPages)[number];
+export type OverlayScene = (typeof OverlayScenes)[number];
 
 export type Settings = {
 	font: Font;
@@ -49,7 +49,7 @@ export type Settings = {
 	useShortMapNames: boolean;
 	useTfWebSocket: boolean;
 	tfWebSocketToken: string;
-	overlayPage: OverlayPage;
+	overlayScene: OverlayScene;
 	obsWsIp: string;
 	obsWsPw: string;
 };
@@ -348,7 +348,7 @@ export const defaultSettings: Settings = {
 	useShortMapNames: true,
 	useTfWebSocket: false,
 	tfWebSocketToken: '',
-	overlayPage: '',
+	overlayScene: '',
 	obsWsIp: '',
 	obsWsPw: ''
 };

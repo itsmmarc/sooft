@@ -25,8 +25,8 @@
 		type MonoFont,
 		BracketOptions,
 		type BracketOption,
-		OverlayPages,
-		type OverlayPage
+		OverlayScenes,
+		type OverlayScene
 	} from '$lib/storage.svelte';
 	import { slide } from 'svelte/transition';
 	import * as _ from 'underscore';
@@ -37,11 +37,17 @@
 		wsState
 	} from '$lib/websockets/tf/ws-tf.svelte';
 	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
-	import { obsConnect } from '$lib/websockets/obs/ws-obs';
+	import { obsConnect, setScene } from '$lib/websockets/obs/ws-obs';
 
 	if (settings.current.useTfWebSocket) {
 		initializeTfWebSocket();
 	}
+
+	$effect(() => {
+		if (settings.current.overlayScene) {
+			setScene(settings.current.overlayScene);
+		}
+	});
 </script>
 
 <span class="self-center">sooft controls</span>
@@ -84,6 +90,9 @@
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
+<span>scene</span>
+<RadioInputs name="scenes" opts={[...OverlayScenes]} bind:value={settings.current.overlayScene} />
+
 <Accordion title="obs websocket">
 	<div class="grid grid-cols-2 gap-2">
 		<label for="input-websocket-obs">ip: </label>
@@ -91,7 +100,7 @@
 			type="text"
 			class="input w-60"
 			id="input-websocket-obs"
-			value={settings.current.tfWebSocketToken}
+			value={settings.current.obsWsIp}
 			onchange={(e) => {
 				let target = e.target as HTMLInputElement;
 				settings.current.obsWsIp = target.value;
@@ -102,7 +111,7 @@
 			type="password"
 			class="input w-60"
 			id="input-websocket-obs"
-			value={settings.current.tfWebSocketToken}
+			value={settings.current.obsWsPw}
 			onchange={(e) => {
 				let target = e.target as HTMLInputElement;
 				settings.current.obsWsPw = target.value;
@@ -122,8 +131,6 @@
 			settings.current = defaultSettings;
 		}}>reset to default</button
 	>
-	<span>page</span>
-	<RadioInputs name="pages" opts={[...OverlayPages]} bind:value={settings.current.overlayPage} />
 	<span>font</span>
 	<RadioInputs name="fonts" opts={[...Fonts]} bind:value={settings.current.font} />
 	<span>mono font</span>
