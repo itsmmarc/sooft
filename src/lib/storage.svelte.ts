@@ -2,9 +2,6 @@ import { PersistentState } from '@friendofsvelte/state';
 import { type Bracket4, type Bracket8 } from './Bracket.svelte';
 
 export const Fonts = [
-	'font-cause',
-	'font-comic-relief',
-	'font-courier-prime',
 	'font-fredoka',
 	'font-inter',
 	'font-bebas',
@@ -50,9 +47,11 @@ export type Settings = {
 	enableSinglePOV: boolean;
 	enablePOVGuide: boolean;
 	useShortMapNames: boolean;
-	useWebSocket: boolean;
-	webSocketToken: string;
+	useTfWebSocket: boolean;
+	tfWebSocketToken: string;
 	overlayPage: OverlayPage;
+	obsWsIp: string;
+	obsWsPw: string;
 };
 
 // unused, intended for minimap
@@ -347,9 +346,11 @@ export const defaultSettings: Settings = {
 	enableSinglePOV: false,
 	enablePOVGuide: false,
 	useShortMapNames: true,
-	useWebSocket: false,
-	webSocketToken: '',
-	overlayPage: ''
+	useTfWebSocket: false,
+	tfWebSocketToken: '',
+	overlayPage: '',
+	obsWsIp: '',
+	obsWsPw: ''
 };
 
 export const defaultOverlay: Overlay = {
