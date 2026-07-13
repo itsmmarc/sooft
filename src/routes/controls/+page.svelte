@@ -33,19 +33,15 @@
 	import {
 		clearPicksAndBans,
 		clearTimer,
-		initializeWebSocket,
+		initializeTfWebSocket,
 		wsState
-	} from '$lib/websocket.svelte';
+	} from '$lib/websockets/tf/ws-tf.svelte';
 	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
+	import { obsConnect } from '$lib/websockets/obs/ws-obs';
 
-	const fonts: Settings['font'][] = [...Fonts];
-	const monoFonts: Settings['monoFont'][] = [...MonoFonts];
-
-	if (settings.current.useWebSocket) {
-		initializeWebSocket();
+	if (settings.current.useTfWebSocket) {
+		initializeTfWebSocket();
 	}
-
-	let test = '';
 </script>
 
 <span class="self-center">sooft controls</span>
@@ -88,6 +84,36 @@
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
+<Accordion title="obs websocket">
+	<div class="grid grid-cols-2 gap-2">
+		<label for="input-websocket-obs">ip: </label>
+		<input
+			type="text"
+			class="input w-60"
+			id="input-websocket-obs"
+			value={settings.current.tfWebSocketToken}
+			onchange={(e) => {
+				let target = e.target as HTMLInputElement;
+				settings.current.obsWsIp = target.value;
+			}}
+		/>
+		<label for="input-websocket-obs">password: </label>
+		<input
+			type="password"
+			class="input w-60"
+			id="input-websocket-obs"
+			value={settings.current.tfWebSocketToken}
+			onchange={(e) => {
+				let target = e.target as HTMLInputElement;
+				settings.current.obsWsPw = target.value;
+			}}
+		/>
+		<button
+			class="button button-unselected hover:button-selected"
+			onclick={() => obsConnect(settings.current.obsWsIp, settings.current.obsWsPw)}>connect</button
+		>
+	</div>
+</Accordion>
 <!-- settings -->
 <Accordion title="settings">
 	<button
@@ -122,27 +148,27 @@
 		<input
 			class="peer size-4 accent-ctp-lavender"
 			type="checkbox"
-			bind:checked={settings.current.useWebSocket}
-			onchange={() => initializeWebSocket()}
+			bind:checked={settings.current.useTfWebSocket}
+			onchange={() => initializeTfWebSocket()}
 		/>
 		<span class="peer-not-checked:text-ctp-text/50">use WebSocket</span>
 	</label>
-	{#if settings.current.useWebSocket}
+	{#if settings.current.useTfWebSocket}
 		<div class="flex gap-2">
 			<label for="input-websocket">token: </label>
 			<input
 				type="password"
 				class="input w-60"
 				id="input-websocket"
-				value={settings.current.webSocketToken}
+				value={settings.current.tfWebSocketToken}
 				onchange={(e) => {
 					let target = e.target as HTMLInputElement;
-					settings.current.webSocketToken = target.value;
+					settings.current.tfWebSocketToken = target.value;
 				}}
 			/>
 			<button
 				class="button button-unselected hover:button-selected"
-				onclick={() => initializeWebSocket()}>connect</button
+				onclick={() => initializeTfWebSocket()}>connect</button
 			>
 		</div>
 	{/if}

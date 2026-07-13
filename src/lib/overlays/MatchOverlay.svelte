@@ -2,10 +2,10 @@
 	import { getFiltersStyle } from '$lib/filters.svelte';
 	import { settings, overlay, items, type Player } from '$lib/storage.svelte';
 	import { fade, slide } from 'svelte/transition';
-	import WebSocketCheckpoints from '$lib/components/overlay/WebSocketCheckpoints.svelte';
-	import WebSocketTimer from '$lib/components/overlay/WebSocketTimer.svelte';
-	import { pickedMaps, timer } from '$lib/websocket.svelte';
-	import { csToTime } from '$lib/websocket.svelte';
+	import WebSocketCheckpoints from '$lib/components/match/WebSocketCheckpoints.svelte';
+	import WebSocketTimer from '$lib/components/match/WebSocketTimer.svelte';
+	import { pickedMaps, timer } from '$lib/websockets/tf/ws-tf.svelte';
+	import { csToTime } from '$lib/websockets/tf/ws-tf.svelte';
 
 	function getPlayerFromPickActor(steamID3: string): Player | null {
 		const playerA = overlay.current.leftPlayer.steamID3;
@@ -25,7 +25,7 @@
 
 <!-- MARK: top bar -->
 <div class="relative z-20 flex h-32 w-full justify-between p-4">
-	{#if settings.current.useWebSocket && settings.current.webSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
+	{#if settings.current.useTfWebSocket && settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
 		<WebSocketTimer />
 	{/if}
 	{#if settings.current.enableGradient}
@@ -87,7 +87,7 @@
 		{/key}
 	</div>
 
-	{#if settings.current.useWebSocket && settings.current.webSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
+	{#if settings.current.useTfWebSocket && settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
 		<WebSocketCheckpoints />
 	{/if}
 	<!-- map -->
@@ -224,7 +224,7 @@
 						? 'flex-row-reverse'
 						: ''} {settings.current.monoFont} "
 				>
-					{#if settings.current.enablePRs && settings.current.useWebSocket}
+					{#if settings.current.enablePRs && settings.current.useTfWebSocket}
 						<div class="flex gap-2">
 							<span class="text-2xl">pr</span>
 							<span class="text-3xl"

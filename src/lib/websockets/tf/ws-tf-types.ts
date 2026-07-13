@@ -215,14 +215,14 @@ export type MessageTypes =
 
 export type Messages = {
 	mapPicks: PickBansSessionStateEvent;
-	timer: BaseTimerEvent[];
-	competition: BaseCompetitionEvent[];
+	timer: BaseTimerEvent | null;
+	competition: BaseCompetitionEvent | null;
 };
 
 export const defaultMessages = {
 	mapPicks: { type: 'pickbans_session_state', session: null },
-	timer: [],
-	competition: []
+	timer: null,
+	competition: null
 } as Messages;
 
 // test checkpoint object - {"type": "timer_checkpoint","steamid": 50734103,"track": 0,"style": 1,"formattedCheckpoint": "Checkpoint 1","time": 6.25499963760376,"timestamp": 1780761188,"tick": 2428}

@@ -2,7 +2,7 @@
 	import { settings, items, overlay, type Map } from '$lib/storage.svelte';
 	import { fade } from 'svelte/transition';
 	import { getFiltersStyle } from '$lib/filters.svelte';
-	import { pickedMaps } from '$lib/websocket.svelte';
+	import { pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
 
 	function getPlayerFromPickActor(steamID3: string): string | null {
 		const playerA = overlay.current.leftPlayer.steamID3;

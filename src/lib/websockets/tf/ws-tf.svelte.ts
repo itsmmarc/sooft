@@ -1,12 +1,12 @@
 import { PersistentState } from '@friendofsvelte/state';
-import { settings, overlay } from './storage.svelte';
+import { settings, overlay } from '../../storage.svelte';
 import {
 	type BaseTimerEvent,
 	type MessageTypes,
 	defaultMessages,
 	type CompetitionSessionPlayerEnd
-} from './websocket-types';
-import { ProxyWebSocket } from './ProxyWebSocket';
+} from './ws-tf-types';
+import { ProxyWebSocket } from '../../ProxyWebSocket';
 import { indexOf } from 'underscore';
 
 export let ws: ProxyWebSocket;
@@ -16,13 +16,6 @@ export const messages = new PersistentState('messages', defaultMessages);
 const defaultPickedMaps: [{ mapID: string; steamID3: string }] = [];
 export const pickedMaps = new PersistentState('pickedMaps', defaultPickedMaps);
 
-export function clearWebSocketMessages() {
-	messages.current = defaultMessages;
-	timer.current.left.timer_stop = true;
-	timer.current.right.timer_stop = true;
-	timer.current = defaultTimerStore;
-	resetCheckpoints();
-}
 export function clearPicksAndBans() {
 	messages.current.mapPicks = { type: 'pickbans_session_state', session: null };
 	pickedMaps.current = defaultPickedMaps;
@@ -35,13 +28,13 @@ export function clearTimer() {
 	resetCheckpoints();
 }
 
-export function initializeWebSocket() {
+export function initializeTfWebSocket() {
 	if (ws && ws.readyState == ProxyWebSocket.OPEN) {
 		console.log('closing web socket connection...');
 		ws.close();
 	}
 
-	if (!settings.current.useWebSocket) {
+	if (!settings.current.useTfWebSocket) {
 		return;
 	}
 
@@ -50,7 +43,7 @@ export function initializeWebSocket() {
 	messages.current = defaultMessages;
 
 	ws = new ProxyWebSocket(
-		`https://console.jumpfortress.tf/?token=${settings.current.webSocketToken}`
+		`https://console.jumpfortress.tf/?token=${settings.current.tfWebSocketToken}`
 	);
 
 	ws.state.subscribe((s) => {
@@ -68,34 +61,27 @@ export function initializeWebSocket() {
 				break;
 			case 'timer_start':
 				timer_start(checkTimerSide(data));
-				// messages.current.timer.push(data);
 				break;
 			case 'timer_stop':
 				timer_stop(checkTimerSide(data));
-				// messages.current.timer.push(data);
 				break;
 			case 'timer_finish':
 				timer_finish(checkTimerSide(data), data.time);
-				// messages.current.timer.push(data);
 				break;
 			case 'timer_checkpoint':
 				timer_checkpoint(checkTimerSide(data), data.formattedCheckpoint, data.time);
 				break;
 			case 'competition_session_live':
 				competition_timer_start(data.durationSeconds);
-				// messages.current.competition.push(data);
 				break;
 			case 'competition_session_end':
 				competition_timer_stop();
-				// messages.current.competition.push(data);
 				break;
 			case 'competition_session_overtime':
 				competition_timer_overtime();
-				// messages.current.competition.push(data);
 				break;
 			case 'competition_session_player_ended':
 				timer_stop_safe(checkTimerSide_competitive_session_player_ended(data));
-				// messages.current.competition.push(data);
 				break;
 			default:
 				return;

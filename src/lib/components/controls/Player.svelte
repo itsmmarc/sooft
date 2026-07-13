@@ -50,7 +50,7 @@
 		>
 	</div>
 
-	{#if settings.current.enablePRs && !settings.current.useWebSocket}
+	{#if settings.current.enablePRs && !settings.current.useTfWebSocket}
 		<input
 			class="input mt-1 w-24 self-center"
 			placeholder="pr"
