@@ -38,10 +38,8 @@
 	} from '$lib/websockets/tf/ws-tf.svelte';
 	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
 	import { obsConnect, setScene } from '$lib/websockets/obs/ws-obs';
-
-	if (settings.current.useTfWebSocket) {
-		initializeTfWebSocket();
-	}
+	import { onMount } from 'svelte';
+	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
 
 	$effect(() => {
 		if (settings.current.overlayScene) {
@@ -85,43 +83,122 @@
 
 <!-- items -->
 <Accordion title="items">
-	<PlayerInput />
+	<AddPlayer />
+	<!-- <PlayerInput /> -->
 	<MapInput />
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
-<span>scene</span>
-<RadioInputs name="scenes" opts={[...OverlayScenes]} bind:value={settings.current.overlayScene} />
+<Accordion title="scenes">
+	<span>scene</span>
+	<RadioInputs name="scenes" opts={[...OverlayScenes]} bind:value={settings.current.overlayScene} />
+</Accordion>
 
-<Accordion title="obs websocket">
-	<div class="grid grid-cols-2 gap-2">
-		<label for="input-websocket-obs">ip: </label>
-		<input
-			type="text"
-			class="input w-60"
-			id="input-websocket-obs"
-			value={settings.current.obsWsIp}
-			onchange={(e) => {
-				let target = e.target as HTMLInputElement;
-				settings.current.obsWsIp = target.value;
-			}}
-		/>
-		<label for="input-websocket-obs">password: </label>
-		<input
-			type="password"
-			class="input w-60"
-			id="input-websocket-obs"
-			value={settings.current.obsWsPw}
-			onchange={(e) => {
-				let target = e.target as HTMLInputElement;
-				settings.current.obsWsPw = target.value;
-			}}
-		/>
-		<button
-			class="button button-unselected hover:button-selected"
-			onclick={() => obsConnect(settings.current.obsWsIp, settings.current.obsWsPw)}>connect</button
-		>
-	</div>
+<Accordion title="connections">
+	<section class="ml-5 w-[calc(100%-1.25rem)]">
+		<Accordion title="obs websocket" defaultstate="closed">
+			<div class="flex flex-wrap gap-2">
+				<label for="input-websocket-obs">ip: </label>
+				<input
+					type="text"
+					class="input"
+					id="input-websocket-obs"
+					value={settings.current.obsWsIp}
+					onchange={(e) => {
+						let target = e.target as HTMLInputElement;
+						settings.current.obsWsIp = target.value;
+					}}
+				/>
+				<label for="input-websocket-obs">password: </label>
+				<input
+					type="password"
+					class="input w-40"
+					id="input-websocket-obs"
+					value={settings.current.obsWsPw}
+					onchange={(e) => {
+						let target = e.target as HTMLInputElement;
+						settings.current.obsWsPw = target.value;
+					}}
+				/>
+				<button
+					class="button button-unselected hover:button-selected"
+					onclick={() => obsConnect(settings.current.obsWsIp, settings.current.obsWsPw)}
+					>connect</button
+				>
+			</div>
+		</Accordion>
+		<Accordion title="tf2 server websocket" defaultstate="closed">
+			<div class="flex gap-2">
+				<label for="input-websocket">token: </label>
+				<input
+					type="password"
+					class="input w-60"
+					id="input-websocket"
+					value={settings.current.tfWebSocketToken}
+					onchange={(e) => {
+						let target = e.target as HTMLInputElement;
+						settings.current.tfWebSocketToken = target.value;
+					}}
+				/>
+				<button
+					class="button button-unselected hover:button-selected"
+					onclick={() => initializeTfWebSocket()}>connect</button
+				>
+				<!-- <div class="flex gap-2">
+                                <p>status:</p>
+                                <span
+                                        class={wsState.current.state === 0
+                                                ? 'text-yellow-200'
+                                                : wsState.current.state === 1
+                                                        ? 'text-green-300'
+                                                        : wsState.current.state === 2
+                                                                ? 'text-red-200'
+                                                                : wsState.current.state === 3
+                                                                        ? 'text-black'
+                                                                        : ''}
+                                >
+                                        {wsState.current.state === 0
+                                                ? 'opening...'
+                                                : wsState.current.state === 1
+                                                        ? 'connected'
+                                                        : wsState.current.state === 2
+                                                                ? 'closing...'
+                                                                : wsState.current.state === 3
+                                                                        ? 'closed'
+                                                                        : ''}
+                                </span>
+                                <span class="italic opacity-50">{wsState.current.state}</span>
+                                </div> -->
+			</div>
+		</Accordion>
+		<Accordion title="steam api" defaultstate="closed">
+			<div class="flex gap-2">
+				<label for="input-steam-api">key: </label>
+				<a
+					class="col-span-1"
+					aria-label="flag-preview"
+					href="https://steamcommunity.com/dev/apikey"
+					target="_blank"
+				>
+					<span class="icon-[mdi--question-mark]"></span>
+				</a>
+				<input
+					type="password"
+					class="input w-60"
+					id="input-steam-api"
+					value={settings.current.steamApiKey}
+					onchange={(e) => {
+						let target = e.target as HTMLInputElement;
+						settings.current.steamApiKey = target.value;
+					}}
+				/>
+				<button
+					class="button button-unselected hover:button-selected"
+					onclick={() => console.log('placebo button :)')}>connect</button
+				>
+			</div>
+		</Accordion>
+	</section>
 </Accordion>
 <!-- settings -->
 <Accordion title="settings">
@@ -150,60 +227,6 @@
 	</div>
 
 	<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
-
-	<label transition:slide|global>
-		<input
-			class="peer size-4 accent-ctp-lavender"
-			type="checkbox"
-			bind:checked={settings.current.useTfWebSocket}
-			onchange={() => initializeTfWebSocket()}
-		/>
-		<span class="peer-not-checked:text-ctp-text/50">use WebSocket</span>
-	</label>
-	{#if settings.current.useTfWebSocket}
-		<div class="flex gap-2">
-			<label for="input-websocket">token: </label>
-			<input
-				type="password"
-				class="input w-60"
-				id="input-websocket"
-				value={settings.current.tfWebSocketToken}
-				onchange={(e) => {
-					let target = e.target as HTMLInputElement;
-					settings.current.tfWebSocketToken = target.value;
-				}}
-			/>
-			<button
-				class="button button-unselected hover:button-selected"
-				onclick={() => initializeTfWebSocket()}>connect</button
-			>
-		</div>
-	{/if}
-	<!-- <div class="flex gap-2">
-		<p>status:</p>
-		<span
-			class={wsState.current.state === 0
-				? 'text-yellow-200'
-				: wsState.current.state === 1
-					? 'text-green-300'
-					: wsState.current.state === 2
-						? 'text-red-200'
-						: wsState.current.state === 3
-							? 'text-black'
-							: ''}
-		>
-			{wsState.current.state === 0
-				? 'opening...'
-				: wsState.current.state === 1
-					? 'connected'
-					: wsState.current.state === 2
-						? 'closing...'
-						: wsState.current.state === 3
-							? 'closed'
-							: ''}
-		</span>
-		<span class="italic opacity-50">{wsState.current.state}</span>
-	</div> -->
 
 	<Checkbox desc="use moving background" setting="enableMovingBG" />
 	<Checkbox desc="use short map names" setting="useShortMapNames" />

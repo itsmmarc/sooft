@@ -5,11 +5,12 @@
 	type Props = {
 		title: string;
 		children: Snippet;
+		defaultstate?: 'open' | 'closed';
 	};
 
-	let { title, children }: Props = $props();
+	let { title, children, defaultstate = 'open' }: Props = $props();
 
-	let show: boolean = $state(true);
+	let show: boolean = $state(defaultstate == 'open' ? true : false);
 </script>
 
 <div class="relative w-full max-w-lg self-center">

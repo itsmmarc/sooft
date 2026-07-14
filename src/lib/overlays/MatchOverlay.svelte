@@ -25,7 +25,7 @@
 
 <!-- MARK: top bar -->
 <div class="relative z-20 flex h-32 w-full justify-between p-4">
-	{#if settings.current.useTfWebSocket && settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
+	{#if settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
 		<WebSocketTimer />
 	{/if}
 	{#if settings.current.enableGradient}
@@ -87,7 +87,7 @@
 		{/key}
 	</div>
 
-	{#if settings.current.useTfWebSocket && settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
+	{#if settings.current.tfWebSocketToken !== '' && overlay.current.leftPlayer.steamID3 && overlay.current.rightPlayer.steamID3}
 		<WebSocketCheckpoints />
 	{/if}
 	<!-- map -->
@@ -224,7 +224,7 @@
 						? 'flex-row-reverse'
 						: ''} {settings.current.monoFont} "
 				>
-					{#if settings.current.enablePRs && settings.current.useTfWebSocket}
+					{#if settings.current.enablePRs}
 						<div class="flex gap-2">
 							<span class="text-2xl">pr</span>
 							<span class="text-3xl"

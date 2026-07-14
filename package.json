@@ -45,6 +45,7 @@
 		"@types/underscore": "^1.13.0",
 		"flag-icons": "^7.5.0",
 		"obs-websocket-js": "^5.0.8",
+		"sveltekit-plugin-console": "^0.1.11",
 		"underscore": "^1.13.8"
 	}
 }

@@ -1,0 +1,361 @@
+import { Player } from '$lib/storage.svelte';
+import _ from 'underscore';
+
+export namespace Tempus2 {
+	// Tempus2 API Interfaces
+	// https://tempus2.xyz/apidocs/
+	// https://tempus2.xyz/api/v0
+	export const Endpoint = 'https://tempus2.xyz/api/v0';
+
+	// MARK: Functions
+	export async function fetchPlayerByTempusID(id: number) {
+		let player = new Player();
+
+		const endpoint = `${Tempus2.Endpoint}/players/id/${id}/stats`;
+		console.log(endpoint);
+		const response = await fetch(endpoint);
+		let data: Tempus2.Error | Tempus2.PlayerStats = await response.json();
+		console.log(data);
+
+		if ('code' in data && data.code == 404) {
+			return null;
+		}
+		data = data as Tempus2.PlayerStats;
+
+		player.tempusID = data.player_info.id;
+		player.steamID = data.player_info.steamid;
+		player.name = data.player_info.name;
+		player.flag = data.player_info.country_code.toLocaleLowerCase();
+
+		player.rank.soldier = _.pick(data.class_rank_info[3], ['points', 'rank', 'title']);
+		player.rank.demo = _.pick(data.class_rank_info[4], ['points', 'rank', 'title']);
+		player.rank.overall = { ..._.pick(data.rank_info, ['points', 'rank']), title: null };
+
+		player.TTs = data.top_stats.map ? data.top_stats.map.count : 0;
+		player.TTs = data.wr_stats.map ? data.wr_stats.map.count : 0;
+
+		return player;
+	}
+
+	// MARK: Util
+	export interface Error {
+		code: 404 | number;
+		details: [];
+		message: string;
+	}
+	interface Author {
+		id: number; // author id
+		name: string;
+		user_id: number;
+		steamid: string;
+		user_name: string;
+		map_count: number;
+	}
+
+	interface Run {
+		id: number; // run id
+		duration: number;
+		date: number;
+		name: string;
+		user_id: number;
+		steamid: string;
+	}
+
+	interface Run2 {
+		id: number;
+		duration: number;
+		date: number;
+		name: string;
+		player_info: PlayerInfo;
+		steamid: string;
+	}
+
+	interface ZoneCounts {
+		checkpoint: number;
+		bonus_end: number;
+		bonus: number;
+		course: number;
+		course_end: number;
+		trick: number;
+		map_end: number;
+		map: number;
+		misc: number;
+	}
+
+	type ZoneTypes =
+		| 'map'
+		| 'map_end'
+		| 'course'
+		| 'course_end'
+		| 'checkpoint'
+		| 'bonus'
+		| 'bonus_end'
+		| 'trick'
+		| 'misc';
+
+	interface Zone {
+		id: number;
+		map_id: number;
+		type: ZoneTypes;
+		zoneindex: number;
+		custom_name: null;
+	}
+
+	interface MapZone extends Zone {
+		type: 'map';
+	}
+	interface MapEndZone extends Zone {
+		type: 'map_end';
+	}
+	interface CourseZone extends Zone {
+		type: 'course';
+	}
+	interface CourseEndZone extends Zone {
+		type: 'course_end';
+	}
+	interface CheckpointZone extends Zone {
+		type: 'checkpoint';
+	}
+	interface BonusZone extends Zone {
+		type: 'bonus';
+	}
+	interface BonusEndZone extends Zone {
+		type: 'bonus_end';
+	}
+	interface TrickZone extends Zone {
+		type: 'trick';
+	}
+	interface MiscZone extends Zone {
+		type: 'misc';
+	}
+
+	// MARK: GET
+	// Map Overview 1
+	// /maps/id/{mapId}/fullOverview
+	// /maps/id/{mapName}/fullOverview
+	export interface MapFullOverview {
+		map_info: { id: number; name: string; date_added: number };
+		tier_info: {
+			soldier: number;
+			demoman: number;
+		};
+		videos: {
+			soldier: string | null;
+			demoman: string | null;
+		};
+		authors: Author[];
+		soldier_runs: Run[];
+		demoman_runs: Run[];
+		zone_counts: ZoneCounts;
+	}
+
+	// Map Overview 2
+	// /maps/id/{mapId}/fullOverview2
+	// /maps/id/{mapName}/fullOverview2
+	export interface MapFullOverview2 {
+		map_info: { id: number; name: string; date_added: number };
+		tier_info: {
+			soldier: number;
+			demoman: number;
+		};
+		rating_info: {
+			soldier: number;
+			demoman: number;
+		};
+		intended_class_info: {
+			soldier: boolean;
+			demoman: boolean;
+		};
+		videos: {
+			soldier: string | null;
+			demoman: string | null;
+		};
+		authors: Author[];
+		soldier_runs: Run2[];
+		demoman_runs: Run2[];
+		zone_counts: ZoneCounts;
+		zones: {
+			checkpoint: CheckpointZone[];
+			bonus_end: BonusEndZone[];
+			bonus: BonusZone[];
+			course: CourseZone[];
+			trick: TrickZone[];
+			course_end: CourseEndZone[];
+			map_end: MapEndZone[];
+			map: MapZone[];
+			misc: MiscZone[];
+		};
+	}
+
+	// Player Rank
+	// /players/id/{playerId}/rank
+	export interface PlayerRank {
+		player_info: {
+			id: number;
+			steamid: string;
+			name: string;
+			first_seen: number;
+			last_seen: number;
+			country: string;
+		};
+		rank_info: {
+			points: number;
+			rank: number;
+			total_ranked: number;
+		};
+		class_rank_info: {
+			'3': {
+				points: number;
+				rank: number;
+				total_ranked: number;
+				title: string;
+			};
+			'4': {
+				points: number;
+				rank: number;
+				total_ranked: number;
+				title: string;
+			};
+		};
+	}
+
+	// Player Info
+	// /players/id/{playerId}/info
+	export interface PlayerInfo {
+		name: string;
+		id: number;
+		steamid: string;
+	}
+
+	// Player Stats
+	// /players/id/{playerId}/stats
+	export interface PlayerStats {
+		player_info: {
+			id: number;
+			steamid: string;
+			name: string;
+			first_seen: number;
+			last_seen: number;
+			country: string;
+			country_code: string;
+		};
+		rank_info: {
+			points: number;
+			rank: number;
+			total_ranked: number;
+		};
+		class_rank_info: {
+			'3': {
+				points: number;
+				rank: number;
+				total_ranked: number;
+				title: string;
+			};
+			'4': {
+				points: number;
+				rank: number;
+				total_ranked: number;
+				title: string;
+			};
+		};
+		country_rank_info: {
+			rank: number;
+			total_ranked: number;
+		};
+		country_class_rank_info: {
+			'3': {
+				rank: number;
+				total_ranked: number;
+			};
+			'4': {
+				rank: number;
+				total_ranked: number;
+			};
+		};
+		pr_stats: {
+			course: {
+				count: number;
+				points: number;
+			};
+			map: {
+				count: number;
+				points: number;
+			};
+			bonus: {
+				count: number;
+				points: number;
+			};
+			trick: {
+				count: number;
+				points: number;
+			};
+		};
+		wr_stats: {
+			course: {
+				count: number;
+				points: number;
+			};
+			map: {
+				count: number;
+				points: number;
+			};
+			bonus: {
+				count: number;
+				points: number;
+			};
+			trick: {
+				count: number;
+				points: number;
+			};
+		};
+		top_stats: {
+			// top times (tt)
+			map: {
+				count: number;
+				points: number;
+			};
+		};
+		zone_count: {
+			special: {
+				count: number;
+			};
+			checkpoint: {
+				count: number;
+			};
+			bonus_end: {
+				count: number;
+			};
+			linear: {
+				count: number;
+			};
+			bonus: {
+				count: number;
+			};
+			course: {
+				count: number;
+			};
+			course_end: {
+				count: number;
+			};
+			trick: {
+				count: number;
+			};
+			map_end: {
+				count: number;
+			};
+			map: {
+				count: number;
+			};
+			misc: {
+				count: number;
+			};
+		};
+	}
+
+	// Search Players and Maps
+	// /search/playersAndMaps/{nameQuery}
+	export interface SearchResults {
+		players: PlayerInfo[];
+		maps: Array<{ id: number; name: string }>;
+	}
+}

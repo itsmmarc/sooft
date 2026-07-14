@@ -47,11 +47,11 @@ export type Settings = {
 	enableSinglePOV: boolean;
 	enablePOVGuide: boolean;
 	useShortMapNames: boolean;
-	useTfWebSocket: boolean;
 	tfWebSocketToken: string;
 	overlayScene: OverlayScene;
 	obsWsIp: string;
 	obsWsPw: string;
+	steamApiKey: string;
 };
 
 // unused, intended for minimap
@@ -90,30 +90,34 @@ export const TFClasses = ['demo', 'soldier', 'overall'] as const;
 export type TFClass = (typeof TFClasses)[number];
 
 export type Rank = {
-	[key in TFClass]: number;
+	[key in TFClass]: { points: number; rank: number; title: string | null };
 };
 
-export type Player = {
-	name: string;
-	isCompetitor: boolean;
-	score: number;
-	tempusID?: string;
-	steamID3?: number;
-	avatarURL?: string;
-	tag?: string;
-	flag?: string;
-	pr?: string; // only used for manual PRs
+export class Player {
+	name: string = '';
+	score: number = 0;
+	tempusID: number = 0;
+	steamID3: number = 0;
+	steamID: string = '';
+	avatarURL: string = '';
+	tag: string = '';
+	flag: string = '';
+	pr: string = ''; // only used for manual PRs
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	tempusPrs?: MapPRs<any>;
-	rank?: Rank;
-	WRs?: number;
-	TTs?: number;
-	bestRun?: string;
-	note?: string;
-	favouriteMap?: string;
-};
+	rank: Rank = {
+		demo: { points: 0, rank: 0, title: '' },
+		soldier: { points: 0, rank: 0, title: '' },
+		overall: { points: 0, rank: 0, title: '' }
+	};
+	WRs: number = 0;
+	TTs: number = 0;
+	bestRun: string = '';
+	note: string = '';
+	favouriteMap: string = '';
+}
 
-export const nullPlayer: Player = { name: '', isCompetitor: false, score: 0 } as const;
+export const nullPlayer: Player = Object.freeze(new Player());
 
 export const BracketOptions = ['whole', 'upper', 'lower'] as const;
 export type BracketOption = (typeof BracketOptions)[number];
@@ -346,33 +350,17 @@ export const defaultSettings: Settings = {
 	enableSinglePOV: false,
 	enablePOVGuide: false,
 	useShortMapNames: true,
-	useTfWebSocket: false,
 	tfWebSocketToken: '',
 	overlayScene: '',
 	obsWsIp: '',
-	obsWsPw: ''
+	obsWsPw: '',
+	steamApiKey: ''
 };
 
 export const defaultOverlay: Overlay = {
 	bestOf: 3,
-	leftPlayer: {
-		name: '',
-		isCompetitor: false,
-		avatarURL: '',
-		tag: '',
-		flag: '',
-		score: 0,
-		tempusPrs: {}
-	},
-	rightPlayer: {
-		name: '',
-		isCompetitor: false,
-		avatarURL: '',
-		tag: '',
-		flag: '',
-		score: 0,
-		tempusPrs: {}
-	},
+	leftPlayer: new Player(),
+	rightPlayer: new Player(),
 	map: { fileName: '', shortName: '', ID: '' },
 	stage: '',
 	class: 'soldier',

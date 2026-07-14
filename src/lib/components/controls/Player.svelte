@@ -50,14 +50,6 @@
 		>
 	</div>
 
-	{#if settings.current.enablePRs && !settings.current.useTfWebSocket}
-		<input
-			class="input mt-1 w-24 self-center"
-			placeholder="pr"
-			bind:value={overlay.current[sideKey].pr}
-		/>
-	{/if}
-
 	<div class="flex flex-col">
 		<!-- name -->
 		<span>player</span>

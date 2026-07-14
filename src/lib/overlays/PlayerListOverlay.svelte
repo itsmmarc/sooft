@@ -44,7 +44,7 @@
 
 		<hr class="col-span-6 mb-0 h-0.5 w-full border-none bg-obs-padding" />
 		{#each items.current.players as player, i (i)}
-			{#if player.name && player.isCompetitor}
+			{#if player.name}
 				{@render Player(player)}
 				<hr class="col-span-6 mb-0 h-0.5 w-full border-none bg-obs-padding" />
 			{/if}

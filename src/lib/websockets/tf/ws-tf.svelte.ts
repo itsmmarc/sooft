@@ -34,10 +34,6 @@ export function initializeTfWebSocket() {
 		ws.close();
 	}
 
-	if (!settings.current.useTfWebSocket) {
-		return;
-	}
-
 	console.log('initializing websocket');
 
 	messages.current = defaultMessages;
