@@ -386,7 +386,7 @@ export const defaultOverlay: Overlay = {
 
 export const defaultItems: Items = {
 	players: [nullPlayer],
-	maps: [],
+	maps: [new TFMap()],
 	stages: defaultStages,
 	bracket: defaultBracket8
 };
