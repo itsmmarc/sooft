@@ -257,13 +257,15 @@
 			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 		{/if}
 
-		<button
-			class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-			// value=""
-			onclick={() => {
-				addPlayer(player);
-			}}>add player</button
-		>
+		{#if fetched}
+			<button
+				class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				// value=""
+				onclick={() => {
+					addPlayer(player);
+				}}>add player</button
+			>
+		{/if}
 
 		<div class="col-span-6 flex flex-col">
 			{#each Object.values(error) as e, i (i)}
