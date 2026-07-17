@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { type Player, items } from '$lib/storage.svelte';
+	import { items } from '$lib/storage.svelte';
+	import { Player } from '$lib/types';
 	import * as _ from 'underscore';
 	import Flag from '../Flag.svelte';
 
@@ -169,17 +170,17 @@
 			}}
 		/>
 
-		<label class="col-span-6" for="rank-demo">demo rank</label>
+		<label class="col-span-6" for="rank-demoman">demo rank</label>
 		<input
 			class="remove-arrow input col-span-4"
 			type="number"
 			pattern="[0-9]"
-			id="rank-demo"
-			placeholder="demo"
-			value={player.rank?.demo}
+			id="rank-demoman"
+			placeholder="demoman"
+			value={player.rank?.demoman}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
-				player.rank!.demo = parseInt(value);
+				player.rank!.demoman = parseInt(value);
 			}}
 		/>
 

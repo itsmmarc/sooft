@@ -11,10 +11,12 @@
 		settings,
 		overlay,
 		items,
-		type Settings,
 		defaultStages,
 		defaultSettings,
-		fullReset,
+		fullReset
+	} from '$lib/storage.svelte';
+	import {
+		type Settings,
 		type TFClass,
 		TFClasses,
 		Fonts,
@@ -25,7 +27,7 @@
 		type BracketOption,
 		OverlayScenes,
 		type OverlayScene
-	} from '$lib/storage.svelte';
+	} from '$lib/types';
 	import { slide } from 'svelte/transition';
 	import * as _ from 'underscore';
 	import {

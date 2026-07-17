@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { items, Player } from '$lib/storage.svelte';
+	import { items } from '$lib/storage.svelte';
+	import { Player } from '$lib/types';
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
 	import { type Steam } from '$lib/api/steam/api-steam-types';
 	import _ from 'underscore';
@@ -42,7 +43,6 @@
 		let data = await response.json();
 		if (data) {
 			let steamPlayer: Steam.PlayerSummary = data.response;
-			console.log(steamPlayer.avatarfull);
 			player.avatarURL = steamPlayer.avatarfull;
 		}
 		player = { ...player };
@@ -136,7 +136,7 @@
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
-		{#if searchResults.length > 1}
+		{#if searchResults.length >= 1}
 			<div class="col-span-full grid grid-cols-12 gap-2">
 				<div class="col-span-3">tempus id</div>
 				<div class="col-span-6">name</div>

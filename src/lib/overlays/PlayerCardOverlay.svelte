@@ -115,7 +115,7 @@
 						<h1 class="text-3xl">soldier rank</h1>
 						<div class="text-8xl font-bold">#{player.rank.soldier.rank}</div>
 						<h1 class="text-3xl">demo rank</h1>
-						<div class="text-8xl font-bold">#{player.rank.demo.rank}</div>
+						<div class="text-8xl font-bold">#{player.rank.demoman.rank}</div>
 					{:else}
 						<h1 class="text-3xl">{overlay.current.class} rank</h1>
 						<div class="text-8xl font-bold">#{player.rank![overlay.current.class].rank}</div>

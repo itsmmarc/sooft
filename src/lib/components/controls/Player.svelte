@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { overlay, items, settings } from '$lib/storage.svelte';
+	import { overlay, items } from '$lib/storage.svelte';
 	import PlayerItemList from './PlayerItemList.svelte';
 
 	type Props = {

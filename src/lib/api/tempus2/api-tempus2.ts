@@ -1,4 +1,5 @@
-import { TFMap, Player } from '$lib/storage.svelte';
+import { items } from '$lib/storage.svelte';
+import { Player, TFMap } from '$lib/types';
 import { convertSteamId } from '$lib/util';
 import _ from 'underscore';
 import { TempusPlaza } from '../tempusplaza/api-tempusplaza';
@@ -31,7 +32,7 @@ export namespace Tempus2 {
 		player.flag = data.player_info.country_code.toLocaleLowerCase();
 
 		player.rank.soldier = _.pick(data.class_rank_info[3], ['points', 'rank', 'title']);
-		player.rank.demo = _.pick(data.class_rank_info[4], ['points', 'rank', 'title']);
+		player.rank.demoman = _.pick(data.class_rank_info[4], ['points', 'rank', 'title']);
 		player.rank.overall = { ..._.pick(data.rank_info, ['points', 'rank']), title: null };
 
 		player.TTs = data.top_stats.map ? data.top_stats.map.count : 0;
@@ -56,20 +57,54 @@ export namespace Tempus2 {
 
 		map.setFileName(data.map_info.name);
 
-		let classKey: 'soldier' | 'demoman' = 'soldier';
-		if (data.intended_class_info.demoman) {
-			classKey = 'demoman';
-		}
+		map.mapZoneId = data.zones.map[0].id;
 
-		map.tier = data.tier_info[classKey];
+		map.intendedClass.soldier = data.intended_class_info.soldier;
+		map.intendedClass.demoman = data.intended_class_info.demoman;
+
+		map.tier.soldier = data.tier_info.soldier;
+		map.tier.demoman = data.tier_info.demoman;
+
+		map.worldRecordInfo.soldier = data.soldier_runs[0];
+		map.worldRecordInfo.demoman = data.demoman_runs[0];
 
 		map.authors = data.authors;
-
-		map.worldRecordInfo = data[`${classKey}_runs`][0];
 
 		map.imageURL = TempusPlaza.getImageUrl(map.getFileName());
 
 		return map;
+	}
+
+	export async function fetchMapPrs(map: TFMap) {
+		const endpoint = `${Tempus2.Endpoint}/zones/id/${map.mapZoneId}/records/list?limit=0`;
+		console.log(endpoint);
+		const response = await fetch(endpoint);
+		let data: Tempus2.Error | Tempus2.MapRecordList = await response.json();
+		console.log(data);
+
+		if ('code' in data && data.code == 404) {
+			return null;
+		}
+
+		data = data as Tempus2.MapRecordList;
+		let results = data.results;
+
+		for (const result of results.soldier) {
+			map.runs.soldier.push({
+				tempusID: result.user_id,
+				rank: result.rank,
+				duration: result.duration
+			});
+		}
+		for (const result of results.demoman) {
+			map.runs.demoman.push({
+				tempusID: result.user_id,
+				rank: result.rank,
+				duration: result.duration
+			});
+		}
+		map.runs.soldier = [...map.runs.soldier];
+		map.runs.demoman = [...map.runs.demoman];
 	}
 
 	export async function searchPlayersAndMaps(query: string) {

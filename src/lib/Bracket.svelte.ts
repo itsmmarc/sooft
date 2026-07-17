@@ -1,4 +1,5 @@
-import { type Player, items, nullPlayer } from './storage.svelte';
+import { items } from './storage.svelte';
+import { Player } from './types';
 
 export type Match = {
 	A: Player;
@@ -19,6 +20,188 @@ export type Bracket4 = {
 	Lower: { SemiFinal: Match[]; Final: Match[] };
 };
 
+export const defaultBracket8: Bracket8 = {
+	type: 8,
+	Upper: {
+		QuarterFinals: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinals', 0, 'A'],
+				loseDest: ['Lower', 'Round1', 0, 'A']
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinals', 0, 'B'],
+				loseDest: ['Lower', 'Round1', 0, 'B']
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinals', 1, 'A'],
+				loseDest: ['Lower', 'Round1', 1, 'A']
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinals', 1, 'B'],
+				loseDest: ['Lower', 'Round1', 1, 'B']
+			}
+		],
+		SemiFinals: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'Final', 0, 'A'],
+				loseDest: ['Lower', 'QuarterFinals', 0, 'B']
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'Final', 0, 'B'],
+				loseDest: ['Lower', 'QuarterFinals', 1, 'B']
+			}
+		],
+		Final: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'GrandFinal', 0, 'A'],
+				loseDest: ['Lower', 'Final', 0, 'B']
+			}
+		],
+		GrandFinal: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: null,
+				loseDest: null
+			}
+		]
+	},
+	Lower: {
+		Round1: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'QuarterFinals', 0, 'A'],
+				loseDest: null
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'QuarterFinals', 1, 'A'],
+				loseDest: null
+			}
+		],
+		QuarterFinals: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'SemiFinal', 0, 'A'],
+				loseDest: null
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'SemiFinal', 0, 'B'],
+				loseDest: null
+			}
+		],
+		SemiFinal: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'Final', 0, 'A'],
+				loseDest: null
+			}
+		],
+		Final: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'GrandFinal', 0, 'B'],
+				loseDest: null
+			}
+		]
+	}
+};
+
+export const defaultBracket4: Bracket4 = {
+	type: 4,
+	Upper: {
+		QuarterFinals: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinal', 0, 'A'],
+				loseDest: ['Lower', 'SemiFinal', 0, 'A']
+			},
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'SemiFinal', 0, 'B'],
+				loseDest: ['Lower', 'SemiFinal', 0, 'B']
+			}
+		],
+		SemiFinal: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'GrandFinal', 0, 'A'],
+				loseDest: ['Lower', 'Final', 0, 'B']
+			}
+		],
+		GrandFinal: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: null,
+				loseDest: null
+			}
+		]
+	},
+	Lower: {
+		SemiFinal: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Lower', 'Final', 0, 'A'],
+				loseDest: null
+			}
+		],
+		Final: [
+			{
+				A: new Player(),
+				B: new Player(),
+				winner: '',
+				winDest: ['Upper', 'GrandFinal', 0, 'B'],
+				loseDest: null
+			}
+		]
+	}
+};
+
 export function setMatchWinner(m: Match, w: 'A' | 'B' | '') {
 	// remove winner from subsequent matches
 	if (!w) {
@@ -37,12 +220,12 @@ export function setMatchWinner(m: Match, w: 'A' | 'B' | '') {
 		if (m.winDest) {
 			items.current.bracket[m.winDest[0]][m.winDest[1]][m.winDest[2]][m.winDest[3]] = w
 				? m[w]
-				: nullPlayer;
+				: new Player();
 		}
 		if (m.loseDest) {
 			items.current.bracket[m.loseDest[0]][m.loseDest[1]][m.loseDest[2]][m.loseDest[3]] = w
 				? m[w == 'A' ? 'B' : 'A']
-				: nullPlayer;
+				: new Player();
 		}
 	}
 }
@@ -60,11 +243,11 @@ export function clearMatchWinner(m: Match) {
 	// progress
 	if (m.A.name && m.B.name) {
 		if (m.winDest) {
-			items.current.bracket[m.winDest[0]][m.winDest[1]][m.winDest[2]][m.winDest[3]] = nullPlayer;
+			items.current.bracket[m.winDest[0]][m.winDest[1]][m.winDest[2]][m.winDest[3]] = new Player();
 		}
 		if (m.loseDest) {
 			items.current.bracket[m.loseDest[0]][m.loseDest[1]][m.loseDest[2]][m.loseDest[3]] =
-				nullPlayer;
+				new Player();
 		}
 	}
 }

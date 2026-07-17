@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { items, overlay, nullPlayer } from '$lib/storage.svelte';
+	import { items, overlay } from '$lib/storage.svelte';
+	import { Player } from '$lib/types';
 	import Button from './Button.svelte';
 
 	type Props = {
@@ -23,7 +24,7 @@
 				}
 				// reset if deleting selected
 				if (overlay.current[sideKey].name === player.name) {
-					overlay.current[sideKey] = items.current.players.at(0) ?? nullPlayer;
+					overlay.current[sideKey] = items.current.players.at(0) ?? new Player();
 				}
 
 				items.current.players = items.current.players.filter((p) => p.name !== player.name);

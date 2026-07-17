@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { items, type Items, type Player, nullPlayer } from '$lib/storage.svelte';
+	import { items } from '$lib/storage.svelte';
+	import { Player, type Items } from '$lib/types';
 	import { slide } from 'svelte/transition';
 
 	type Props = {
@@ -31,7 +32,7 @@
 		class="button-remove"
 		onclick={() => {
 			if (item === 'players') {
-				items.current[item] = [nullPlayer as Player];
+				items.current[item] = [new Player()];
 			} else {
 				items.current[item] = [''];
 			}

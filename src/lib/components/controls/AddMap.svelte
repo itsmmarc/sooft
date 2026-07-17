@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { items, TFMap } from '$lib/storage.svelte';
+	import { items } from '$lib/storage.svelte';
+	import { TFMap } from '$lib/types';
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
-	import { type Steam } from '$lib/api/steam/api-steam-types';
 	import _ from 'underscore';
-	import Flag from '../Flag.svelte';
 	import { TempusPlaza } from '$lib/api/tempusplaza/api-tempusplaza';
 
 	type Error = { state: boolean; msg: string };
@@ -28,6 +27,8 @@
 		fetched = true;
 
 		map = result as TFMap;
+
+		await Tempus2.fetchMapPrs(map);
 	}
 
 	async function searchMaps(queryTerm: string) {
@@ -48,7 +49,7 @@
 		}
 
 		items.current.maps = [...items.current.maps, map];
-		console.log('added player:');
+		console.log('added map:');
 		console.log(map);
 
 		isOpen = false;
@@ -107,7 +108,7 @@
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
-		{#if searchResults.length > 1}
+		{#if searchResults.length >= 1}
 			<div class="col-span-full grid grid-cols-12 gap-2">
 				<div class="col-span-3">image</div>
 				<div class="col-span-6">name</div>

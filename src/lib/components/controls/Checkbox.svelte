@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { settings, type Settings } from '$lib/storage.svelte';
+	import { settings } from '$lib/storage.svelte';
+	import { type Settings } from '$lib/types';
 	import { slide } from 'svelte/transition';
 
 	type Props = {
