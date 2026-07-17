@@ -3,6 +3,7 @@
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
 	import { type Steam } from '$lib/api/steam/api-steam-types';
 	import _ from 'underscore';
+	import Flag from '../Flag.svelte';
 
 	type Error = { state: boolean; msg: string };
 
@@ -206,7 +207,7 @@
 					player.flag = value;
 				}}
 			/>
-			<span class="fi fi-{player.flag} col-span-1 ml-4 rounded text-[1.5rem]"></span>
+			<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
 
 			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 

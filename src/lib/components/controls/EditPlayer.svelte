@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type Player, items } from '$lib/storage.svelte';
 	import * as _ from 'underscore';
+	import Flag from '../Flag.svelte';
 
 	function replacePlayer() {
 		let index: number = _.findIndex(items.current.players, (p) => _.isEqual(p, oldPlayer));
@@ -110,7 +111,7 @@
 				player = { ...player };
 			}}
 		/>
-		<span class="fi fi-{player.flag} col-span-1 ml-4 rounded text-[1.5rem]"></span>
+		<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 

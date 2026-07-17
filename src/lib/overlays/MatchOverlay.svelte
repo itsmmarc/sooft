@@ -6,6 +6,7 @@
 	import WebSocketTimer from '$lib/components/match/WebSocketTimer.svelte';
 	import { pickedMaps, timer } from '$lib/websockets/tf/ws-tf.svelte';
 	import { csToTime } from '$lib/websockets/tf/ws-tf.svelte';
+	import Flag from '$lib/components/Flag.svelte';
 
 	function getPlayerFromPickActor(steamID3: string): Player | null {
 		const playerA = overlay.current.leftPlayer.steamID3;
@@ -174,7 +175,7 @@
 		<!-- flag -->
 		{#if settings.current.enableFlags && flag}
 			{#key flag}
-				<span in:fade class="fi fi-{flag} flex h-fit w-fit rounded-xl text-[6rem]"></span>
+				<Flag code={flag} styleclass="flex h-fit w-fit rounded-xl text-[6rem]" />
 			{/key}
 		{/if}
 		{#if settings.current.enableAvatars && avatarURL}

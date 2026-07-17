@@ -2,6 +2,7 @@
 	import { type Player, nullPlayer, items } from '$lib/storage.svelte';
 	import { slide } from 'svelte/transition';
 	import EditPlayer from './EditPlayer.svelte';
+	import Flag from '../Flag.svelte';
 
 	function addPlayer() {
 		items.current.players = [...items.current.players, player];
@@ -120,7 +121,7 @@
 				player.flag = value;
 			}}
 		/>
-		<span class="fi fi-{player.flag} col-span-1 ml-4 rounded text-[1.5rem]"></span>
+		<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 

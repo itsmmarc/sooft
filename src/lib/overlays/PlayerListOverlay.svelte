@@ -4,6 +4,7 @@
 	import { settings } from '$lib/storage.svelte';
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
+	import Flag from '$lib/components/Flag.svelte';
 
 	const drawBG: boolean = !page.url.searchParams.has('nobg');
 </script>
@@ -67,7 +68,7 @@
 		/>
 	</li>
 	<li class="-mt-2 -mb-2">
-		<span in:fade class="fi fi-{player.flag} flex h-fit w-fit rounded-xl text-[6rem]"></span>
+		<Flag code={player.flag} styleclass="text-[6rem] rounded-xl" />
 	</li>
 	{@render BodyCell(player.name)}
 	{@render BodyCell(player.rank![overlay.current.class].rank.toString())}

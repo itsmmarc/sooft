@@ -4,6 +4,7 @@
 	import { settings } from '$lib/storage.svelte';
 	import { fade } from 'svelte/transition';
 	import PRDisplay from '$lib/components/maps/PRDisplay.svelte';
+	import Flag from '$lib/components/Flag.svelte';
 </script>
 
 <!-- isolated border filter -->
@@ -64,8 +65,7 @@
 					<!-- flag -->
 					{#if settings.current.enableFlags && player.flag}
 						{#key player.flag}
-							<span in:fade class="fi fi-{player.flag} flex h-fit w-fit rounded-xl text-[8rem]"
-							></span>
+							<Flag code={player.flag} styleclass="flex h-fit w-fit rounded-xl text-[8rem]" />
 						{/key}
 					{/if}
 				</div>
