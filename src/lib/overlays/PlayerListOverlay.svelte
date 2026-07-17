@@ -12,10 +12,6 @@
 <!-- isolated border filter -->
 <div class="border-b-4 border-ctp-lavender/50" style:filter={getFiltersStyle()}></div>
 
-<!-- <PlayerInput sideKey="leftPlayer" />
-<hr class="mx-2 mb-2 h-32 w-1 self-end border-none bg-obs-padding" />
-<PlayerInput side="right" /> -->
-
 <section class="relative z-20 m-auto flex w-full justify-center gap-10 p-4">
 	{#if drawBG}
 		{#if settings.current.enableGradient}

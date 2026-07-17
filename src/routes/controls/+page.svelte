@@ -5,7 +5,6 @@
 	import Checkbox from '$lib/components/controls/Checkbox.svelte';
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
 	import Player from '$lib/components/controls/Player.svelte';
-	import PlayerInput from '$lib/components/controls/PlayerInput.svelte';
 	import MapInput from '$lib/components/controls/MapInput.svelte';
 	import RangeInput from '$lib/components/controls/RangeInput.svelte';
 	import { getFiltersStyle } from '$lib/filters.svelte';
@@ -84,7 +83,6 @@
 <!-- items -->
 <Accordion title="items">
 	<AddPlayer />
-	<!-- <PlayerInput /> -->
 	<MapInput />
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
