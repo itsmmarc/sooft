@@ -115,14 +115,14 @@
 				<div class="h-fit w-80 text-center" style:filter={getFiltersStyle()}>
 					{#if overlay.current.class == 'overall'}
 						<h1 class=" text-3xl">overall rank</h1>
-						<div class="text-8xl font-bold">#{player.rank!.overall}</div>
+						<div class="text-8xl font-bold">#{player.rank.overall.rank}</div>
 						<h1 class="text-3xl">soldier rank</h1>
-						<div class="text-8xl font-bold">#{player.rank!.soldier}</div>
+						<div class="text-8xl font-bold">#{player.rank.soldier.rank}</div>
 						<h1 class="text-3xl">demo rank</h1>
-						<div class="text-8xl font-bold">#{player.rank!.demo}</div>
+						<div class="text-8xl font-bold">#{player.rank.demo.rank}</div>
 					{:else}
 						<h1 class="text-3xl">{overlay.current.class} rank</h1>
-						<div class="text-8xl font-bold">#{player.rank![overlay.current.class]}</div>
+						<div class="text-8xl font-bold">#{player.rank![overlay.current.class].rank}</div>
 					{/if}
 				</div>
 			</div>

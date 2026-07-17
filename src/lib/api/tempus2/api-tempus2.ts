@@ -1,4 +1,5 @@
 import { Player } from '$lib/storage.svelte';
+import { convertSteamId } from '$lib/util';
 import _ from 'underscore';
 
 export namespace Tempus2 {
@@ -24,6 +25,7 @@ export namespace Tempus2 {
 
 		player.tempusID = data.player_info.id;
 		player.steamID = data.player_info.steamid;
+		player.steamID3 = convertSteamId(player.steamID, 'SteamID3') as number;
 		player.name = data.player_info.name;
 		player.flag = data.player_info.country_code.toLocaleLowerCase();
 
@@ -35,6 +37,27 @@ export namespace Tempus2 {
 		player.TTs = data.wr_stats.map ? data.wr_stats.map.count : 0;
 
 		return player;
+	}
+
+	export async function searchPlayersAndMaps(query: string) {
+		const endpoint = `${Tempus2.Endpoint}/search/playersAndMaps/${query}`;
+		console.log(endpoint);
+		const response = await fetch(endpoint);
+		let data: Tempus2.Error | Tempus2.SearchResults = await response.json();
+		console.log(data);
+
+		data = data as Tempus2.SearchResults;
+
+		return data;
+	}
+
+	export async function searchPlayers(query: string) {
+		let data = await searchPlayersAndMaps(query);
+		return data.players;
+	}
+	export async function searchMaps(query: string) {
+		let data = await searchPlayersAndMaps(query);
+		return data.maps;
 	}
 
 	// MARK: Util
@@ -129,6 +152,38 @@ export namespace Tempus2 {
 		type: 'misc';
 	}
 
+	interface DemoInfo {
+		id: number;
+		start_tick: number;
+		end_tick: number;
+		url: string;
+		server_info: {
+			id: number;
+			name: string;
+		};
+	}
+	interface ZoneResult {
+		id: number; // completion id
+		zone_id: number;
+		duration: number;
+		class: 3 | 4;
+		date: number;
+		demo_info: DemoInfo;
+		user_id: number; // tempus id
+		name: string;
+		steamid: string; // steamid64
+		rank: number;
+		placement: number;
+		player_info: PlayerInfo;
+	}
+
+	interface SoldierZoneResult extends ZoneResult {
+		class: 3;
+	}
+	interface DemoZoneResult extends ZoneResult {
+		class: 4;
+	}
+
 	// MARK: GET
 	// Map Overview 1
 	// /maps/id/{mapId}/fullOverview
@@ -184,6 +239,34 @@ export namespace Tempus2 {
 			map_end: MapEndZone[];
 			map: MapZone[];
 			misc: MiscZone[];
+		};
+	}
+
+	// Zone Records List
+	// /zones/id/{zoneId}/records/list?limit={limit}
+	export interface MapRecordList {
+		zone_info: {
+			id: number;
+			map_id: number;
+			zoneindex: 1;
+			custom_name: null | string;
+			type: 'map';
+		};
+		tier_info: {
+			'3': number;
+			'4': number;
+		};
+		rating_info: {
+			'3': number;
+			'4': number;
+		};
+		completion_info: {
+			soldier: number;
+			demoman: number;
+		};
+		results: {
+			soldier: SoldierZoneResult[];
+			demoman: DemoZoneResult[];
 		};
 	}
 

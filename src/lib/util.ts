@@ -15,7 +15,10 @@ export function getPlayer(name?: string, steamID3?: number, players?: Player[]):
 }
 
 // https://github.com/SteamRun/SteamIDConverter/blob/master/SteamIDConverter.html
-export function convertSteamId(id: string, resultFormat: 'SteamID32' | 'SteamID64' | 'SteamID3') {
+export function convertSteamId(
+	id: string,
+	resultFormat: 'SteamID32' | 'SteamID64' | 'SteamID3'
+): string | number {
 	let SID64_1 = '7656'; //Starting Steam ID is 76561197960265728 (javascript cant handle numbers that big, so i took firt 4 digits out) and use them as a string
 	let SID64_S = Number(1197960265728); //the rest of the digits from the Starting Steam ID (to calculate with) after calculations the remaining numbers will be SID64_2
 
@@ -28,7 +31,7 @@ export function convertSteamId(id: string, resultFormat: 'SteamID32' | 'SteamID6
 
 	let S3ID_1;
 	let S3ID_2;
-	let S3ID_3;
+	let S3ID_3 = 0;
 
 	let SID32_1;
 	let SID32_2;
@@ -75,7 +78,7 @@ export function convertSteamId(id: string, resultFormat: 'SteamID32' | 'SteamID6
 
 	if (isSteamID == true) {
 		//handle SteamIDs
-		let S3ID = '[U:1:' + S3ID_3 + ']';
+		let S3ID = S3ID_3; // modified to only return the numeric part as this is what is used for kingstripes' tf2 websocket. eg: returns 40571167 instead of [U:1:40571167]
 		let SID32 = 'STEAM_0:' + SID32_2 + ':' + SID32_3;
 		let SID64 = SID64_1 + SID64_2;
 

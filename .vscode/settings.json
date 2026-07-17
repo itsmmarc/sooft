@@ -1,5 +1,16 @@
 {
 	"files.associations": {
 		"*.css": "tailwindcss"
+	},
+	"window.title": "jtoo",
+	"workbench.colorCustomizations": {
+		"statusBarItem.warningBackground": "#b38aff",
+		"statusBarItem.warningForeground": "#000000",
+		"statusBarItem.warningHoverBackground": "#b38aff",
+		"statusBarItem.warningHoverForeground": "#00000090",
+		"statusBarItem.remoteBackground": "#b38aff",
+		"statusBarItem.remoteForeground": "#000000",
+		"statusBarItem.remoteHoverBackground": "#b38aff",
+		"statusBarItem.remoteHoverForeground": "#00000090"
 	}
 }

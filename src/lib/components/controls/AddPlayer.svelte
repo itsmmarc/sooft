@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Player } from '$lib/storage.svelte';
+	import { items, Player } from '$lib/storage.svelte';
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
 	import { type Steam } from '$lib/api/steam/api-steam-types';
 	import _ from 'underscore';
@@ -7,12 +7,16 @@
 	type Error = { state: boolean; msg: string };
 
 	let isOpen = $state(false);
+	let queryTerm = $state('');
+	let searchResults: Tempus2.PlayerInfo[] = $state([]);
 	let fetched = $state(false);
 	let player = $state(new Player());
 	let error = $state({
 		invalidTempusID: { state: false, msg: 'error: invalid tempus id' } as Error,
 		noName: { state: false, msg: 'error: no name entered' } as Error,
-		noSteamID: { state: false, msg: 'error: no steam id3 entered' } as Error
+		noSteamID3: { state: false, msg: 'error: no steamid3 entered' } as Error,
+		noSteamID64: { state: false, msg: 'error: no steamid64 entered' } as Error,
+		noTempusID: { state: false, msg: 'error: no tempus id entered' } as Error
 	});
 
 	async function fetchPlayerByTempusID(tempusId: number) {
@@ -21,6 +25,7 @@
 		let result = await Tempus2.fetchPlayerByTempusID(tempusId);
 		if (!result) {
 			error.invalidTempusID.state = true;
+			return;
 		}
 		fetched = true;
 
@@ -39,12 +44,57 @@
 			player.avatarURL = steamPlayer.avatarfull;
 		}
 		player = { ...player };
+
+		return;
+	}
+
+	async function searchPlayers(queryTerm: string) {
+		fetched = false;
+		searchResults = await Tempus2.searchPlayers(queryTerm);
+	}
+
+	function addPlayer(player: Player) {
+		let errorFound = false;
+		if (!player.name) {
+			error.noName.state = true;
+			errorFound = true;
+		}
+		if (!player.tempusID) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+		if (!player.steamID) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+		if (!player.steamID3) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+
+		if (errorFound) {
+			return;
+		}
+
+		items.current.players = [...items.current.players, player];
+		console.log('added player:');
+		console.log(player);
+
+		isOpen = false;
+	}
+
+	function clear() {
+		player = new Player();
+		queryTerm = '';
+		searchResults = [];
+		fetched = false;
 	}
 </script>
 
 <button
 	class="button w-2/5 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
 	onclick={() => {
+		clear();
 		isOpen = true;
 	}}>add player</button
 >
@@ -53,25 +103,50 @@
 	<section
 		class="absolute z-50 grid h-fit w-full grid-cols-12 gap-y-1 self-center border-2 bg-obs-content p-2"
 	>
-		<label for="tempus-id" class="col-span-4">tempus id</label>
-		<input
-			class="remove-arrow input col-span-4"
-			type="number"
-			id="tempus-id"
-			placeholder="tempus id"
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.tempusID = +value;
-			}}
-		/>
-		<button
-			class="button col-span-4 w-1/2 justify-self-center border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-			onclick={() => {
-				if (player.tempusID) {
-					fetchPlayerByTempusID(player.tempusID);
-				}
-			}}>fetch</button
-		>
+		<div class="col-span-full flex gap-2">
+			<label for="tempus-id" class="col-span-4">search</label>
+			<input
+				class="remove-arrow input col-span-4"
+				type="text"
+				id="tempus-id"
+				placeholder="tempus id or name"
+				onkeyup={(e) => {
+					const value = (e.target as HTMLInputElement).value;
+					queryTerm = value;
+				}}
+			/>
+			<button
+				class="button col-span-4 max-w-30 justify-self-center border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				onclick={() => {
+					if (queryTerm) {
+						if (!queryTerm.match(/[^0-9]/g)) {
+							fetchPlayerByTempusID(parseInt(queryTerm));
+						} else {
+							searchPlayers(queryTerm);
+						}
+					}
+				}}>fetch</button
+			>
+		</div>
+
+		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+
+		{#if searchResults.length > 1}
+			<div class="col-span-3">tempus id</div>
+			<div class="col-span-9">name</div>
+			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+		{/if}
+		{#each searchResults as searchResult, i (i)}
+			<div class="col-span-3">{searchResult.id}</div>
+			<div class="col-span-6">{searchResult.name}</div>
+			<button
+				class="button col-span-3 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				onclick={() => {
+					fetchPlayerByTempusID(searchResult.id);
+					searchResults = [];
+				}}>select</button
+			>
+		{/each}
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
@@ -177,21 +252,7 @@
 			class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
 			// value=""
 			onclick={() => {
-				let errorFound = false;
-				if (!player.name) {
-					error.noName.state = true;
-					errorFound = true;
-				}
-				if (!player.steamID3) {
-					error.noSteamID.state = true;
-					errorFound = true;
-				}
-
-				if (errorFound) {
-					return;
-				}
-
-				isOpen = false;
+				addPlayer(player);
 			}}>add player</button
 		>
 

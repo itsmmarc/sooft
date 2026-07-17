@@ -37,10 +37,10 @@
 	<ul class="grid grid-cols-[repeat(6,auto)] gap-x-6 gap-y-4 text-4xl">
 		<li></li>
 		<li></li>
-		<li class="header" style:filter={getFiltersStyle()}>name</li>
-		<li class="header" style:filter={getFiltersStyle()}>{overlay.current.class} rank</li>
-		<li class="header" style:filter={getFiltersStyle()}>world records</li>
-		<li class="header" style:filter={getFiltersStyle()}>top times</li>
+		{@render Header('name')}
+		{@render Header(`${overlay.current.class} rank`)}
+		{@render Header('world records')}
+		{@render Header('top times')}
 
 		<hr class="col-span-6 mb-0 h-0.5 w-full border-none bg-obs-padding" />
 		{#each items.current.players as player, i (i)}
@@ -52,8 +52,12 @@
 	</ul>
 </section>
 
+{#snippet Header(title: string)}
+	<li class="pr-20 italic opacity-60" style:filter={getFiltersStyle()}>{title}</li>
+{/snippet}
+
 {#snippet Player(player: Player)}
-	<li class="bodycell">
+	<li class="-mt-2 -mb-2">
 		<img
 			in:fade
 			src={player.avatarURL}
@@ -62,29 +66,17 @@
 			draggable="false"
 		/>
 	</li>
-	<li class="bodycell">
+	<li class="-mt-2 -mb-2">
 		<span in:fade class="fi fi-{player.flag} flex h-fit w-fit rounded-xl text-[6rem]"></span>
 	</li>
-	<li class="bodycell" style:filter={getFiltersStyle()}>
-		{player.name}
-	</li>
-	<li class="bodycell" style:filter={getFiltersStyle()}>
-		{player.rank![overlay.current.class]}
-	</li>
-	<li class="bodycell" style:filter={getFiltersStyle()}>
-		{player.WRs}
-	</li>
-	<li class="bodycell" style:filter={getFiltersStyle()}>
-		{player.TTs}
-	</li>
+	{@render BodyCell(player.name)}
+	{@render BodyCell(player.rank![overlay.current.class].rank.toString())}
+	{@render BodyCell(player.WRs.toString())}
+	{@render BodyCell(player.TTs.toString())}
 {/snippet}
 
-<style>
-	@import 'tailwindcss';
-	.header {
-		@apply pr-20 italic opacity-60;
-	}
-	.bodycell {
-		@apply -mt-2 -mb-2;
-	}
-</style>
+{#snippet BodyCell(content: string, noFilter: boolean = false)}
+	<li class="-mt-2 -mb-2" style:filter={noFilter ? '' : getFiltersStyle()}>
+		{content}
+	</li>
+{/snippet}

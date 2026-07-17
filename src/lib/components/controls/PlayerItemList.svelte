@@ -34,16 +34,6 @@
 			{:else}
 				{player.name}
 			{/if}
-			<!-- {:else if item === 'flags'}
-				<span class="fi fi-{player}"></span>
-				<span>{player}</span>
-			{:else if item === 'avatarURLs'}
-				<img
-					src={player}
-					alt=""
-					class="size-12 object-cover object-center {selected ? '' : 'opacity-35'}"
-					draggable="false"
-				/> -->
 		</Button>
 	{/each}
 </div>
