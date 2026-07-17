@@ -85,17 +85,17 @@
 		<div class="absolute top-0 left-0 size-full bg-black/35"></div>
 	{/if}
 	<section class="flex flex-wrap justify-around gap-5 p-10">
-		{#each Object.entries(items.current.maps) as [key, map], i (i)}
-			{#if key !== 'null'}
+		{#each items.current.maps as map, i (i)}
+			{#if !map.getFileName()}
 				{@const m: PickBansSessionStateEvent | null = messages.current.mapPicks ? messages.current.mapPicks : null}
 				<div class="@container relative mb-2 h-65 w-130 text-4xl">
 					{#if m && 'session' in m && m.session}
-						{@const pickNum = pickedMaps.current.findIndex((p) => p.mapID == map.ID)}
+						{@const pickNum = pickedMaps.current.findIndex((p) => p.mapID == map.getTfId())}
 						{#if pickNum >= 0}
 							<div class="absolute right-6 bottom-4 text-5xl">{pickNum + 1}</div>
 						{/if}
 						{#each m.session.history as step, i (i)}
-							{#if step.mapId == map.ID}
+							{#if step.mapId == map.getTfId()}
 								<div
 									transition:fade|global
 									class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-tr
@@ -124,7 +124,7 @@
 						class="absolute top-0 right-0 w-full p-2 text-center"
 						style:filter={getFiltersStyle()}
 					>
-						{settings.current.useShortMapNames ? key : map.fileName}
+						{settings.current.useShortMapNames ? map.shortName : map.getFileName()}
 					</h1>
 					<div
 						class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-t from-transparent via-transparent to-[#000000d0]"

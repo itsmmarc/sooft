@@ -1,6 +1,7 @@
-import { Player } from '$lib/storage.svelte';
+import { TFMap, Player } from '$lib/storage.svelte';
 import { convertSteamId } from '$lib/util';
 import _ from 'underscore';
+import { TempusPlaza } from '../tempusplaza/api-tempusplaza';
 
 export namespace Tempus2 {
 	// Tempus2 API Interfaces
@@ -39,6 +40,38 @@ export namespace Tempus2 {
 		return player;
 	}
 
+	export async function fetchMapByName(name: string) {
+		let map = new TFMap();
+
+		const endpoint = `${Tempus2.Endpoint}/maps/name/${name}/fullOverview2`;
+		console.log(endpoint);
+		const response = await fetch(endpoint);
+		let data: Tempus2.Error | Tempus2.MapFullOverview2 = await response.json();
+		console.log(data);
+
+		if ('code' in data && data.code == 404) {
+			return null;
+		}
+		data = data as Tempus2.MapFullOverview2;
+
+		map.setFileName(data.map_info.name);
+
+		let classKey: 'soldier' | 'demoman' = 'soldier';
+		if (data.intended_class_info.demoman) {
+			classKey = 'demoman';
+		}
+
+		map.tier = data.tier_info[classKey];
+
+		map.authors = data.authors;
+
+		map.worldRecordInfo = data[`${classKey}_runs`][0];
+
+		map.imageURL = TempusPlaza.getImageUrl(map.getFileName());
+
+		return map;
+	}
+
 	export async function searchPlayersAndMaps(query: string) {
 		const endpoint = `${Tempus2.Endpoint}/search/playersAndMaps/${query}`;
 		console.log(endpoint);
@@ -66,7 +99,7 @@ export namespace Tempus2 {
 		details: [];
 		message: string;
 	}
-	interface Author {
+	export interface Author {
 		id: number; // author id
 		name: string;
 		user_id: number;
@@ -84,7 +117,7 @@ export namespace Tempus2 {
 		steamid: string;
 	}
 
-	interface Run2 {
+	export interface Run2 {
 		id: number;
 		duration: number;
 		date: number;
@@ -187,7 +220,7 @@ export namespace Tempus2 {
 	// MARK: GET
 	// Map Overview 1
 	// /maps/id/{mapId}/fullOverview
-	// /maps/id/{mapName}/fullOverview
+	// /maps/name/{mapName}/fullOverview
 	export interface MapFullOverview {
 		map_info: { id: number; name: string; date_added: number };
 		tier_info: {
@@ -206,7 +239,7 @@ export namespace Tempus2 {
 
 	// Map Overview 2
 	// /maps/id/{mapId}/fullOverview2
-	// /maps/id/{mapName}/fullOverview2
+	// /maps/name/{mapName}/fullOverview2
 	export interface MapFullOverview2 {
 		map_info: { id: number; name: string; date_added: number };
 		tier_info: {
@@ -439,6 +472,11 @@ export namespace Tempus2 {
 	// /search/playersAndMaps/{nameQuery}
 	export interface SearchResults {
 		players: PlayerInfo[];
-		maps: Array<{ id: number; name: string }>;
+		maps: MapInfo[];
+	}
+
+	export interface MapInfo {
+		id: number;
+		name: string;
 	}
 }

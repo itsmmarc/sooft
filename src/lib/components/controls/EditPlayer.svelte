@@ -123,7 +123,7 @@
 			value={player.tempusID}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
-				player.tempusID = value;
+				player.tempusID = +value;
 			}}
 		/>
 
@@ -240,18 +240,18 @@
 
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
-		{#each Object.entries(items.current.maps) as [map], i (i)}
-			{#if map !== 'null'}
-				<label class="col-span-6" for="pr-{map}-time">pr {map}</label>
+		{#each items.current.maps as map, i (i)}
+			{#if !map.getFileName()}
+				<label class="col-span-6" for="pr-{map.shortName}-time">pr {map.shortName}</label>
 				<input
 					class="input col-span-3 mr-1"
 					type="text"
 					id="pr-{map}-time"
 					placeholder="0:00.00"
-					value={player.tempusPrs![map].time ?? ''}
+					value={player.tempusPrs![map.getFileName()].time ?? ''}
 					onkeyup={(e) => {
 						const value = (e.target as HTMLInputElement).value;
-						player.tempusPrs![map].time = value;
+						player.tempusPrs![map.getFileName()].time = value;
 					}}
 				/>
 				<input
@@ -259,10 +259,10 @@
 					type="number"
 					id="pr-{map}-rank"
 					placeholder="rank"
-					value={player.tempusPrs![map].rank ?? ''}
+					value={player.tempusPrs![map.getFileName()].rank ?? ''}
 					onkeyup={(e) => {
 						const value = (e.target as HTMLInputElement).value;
-						player.tempusPrs![map].rank = parseInt(value);
+						player.tempusPrs![map.getFileName()].rank = parseInt(value);
 					}}
 				/>
 			{/if}

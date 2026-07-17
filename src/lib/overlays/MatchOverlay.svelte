@@ -100,7 +100,7 @@
 			<span in:fade class="relative right-2 -skew-x-30 px-8 text-3xl text-ctp-text/75"
 				>{settings.current.useShortMapNames
 					? overlay.current.map.shortName
-					: overlay.current.map.fileName}</span
+					: overlay.current.map.getFileName()}</span
 			>
 		{/key}
 	</div>
@@ -110,10 +110,10 @@
 	{#if pickedMaps.current.length > 1}
 		{#each pickedMaps.current as pickedMap, i (i)}
 			{@const player = getPlayerFromPickActor(pickedMap.steamID3)}
-			{@const isCurrent = pickedMap.mapID == overlay.current.map.ID}
+			{@const isCurrent = pickedMap.mapID == overlay.current.map.getTfId()}
 			{@const map = () => {
-				for (const [key, map] of Object.entries(items.current.maps)) {
-					if (map.ID == pickedMap.mapID) {
+				for (const map of items.current.maps) {
+					if (map.getTfId() == pickedMap.mapID) {
 						return map;
 					}
 				}
@@ -130,7 +130,7 @@
 						class="absolute top-0 right-0 w-full p-2 text-center {settings.current.font}"
 						style:filter={getFiltersStyle()}
 					>
-						{settings.current.useShortMapNames ? MAP.shortName : MAP.fileName}
+						{settings.current.useShortMapNames ? MAP.shortName : MAP.getFileName()}
 					</h1>
 					{#if player}
 						{#if settings.current.enableAvatars && player.avatarURL}

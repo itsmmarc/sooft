@@ -1,5 +1,6 @@
 import { PersistentState } from '@friendofsvelte/state';
 import { type Bracket4, type Bracket8 } from './Bracket.svelte';
+import type { Tempus2 } from './api/tempus2/api-tempus2';
 
 export const Fonts = [
 	'font-fredoka',
@@ -69,21 +70,13 @@ export type Settings = {
 // 	end: Zone;
 // 	cp?: Zone[];
 // };
-export type Map = {
-	fileName: string;
-	shortName: string;
-	ID: string;
-	imageURL?: string;
-	// zones?: Zones;
-	// minimap?: { graphic: string; bounds: Zone };
-};
 
 export type MapPRs<T> = {
 	[K in keyof T]: { rank: number; time: string };
 };
 
 export type MapsInfo<T> = {
-	[K in keyof T]: Map;
+	[K in keyof T]: TFMap;
 };
 
 export const TFClasses = ['demo', 'soldier', 'overall'] as const;
@@ -117,6 +110,30 @@ export class Player {
 	favouriteMap: string = '';
 }
 
+export class TFMap {
+	fileName: string = '';
+	shortName: string = '';
+	tier: number = 0;
+	authors: Tempus2.Author[] = [];
+	worldRecordInfo?: Tempus2.Run2 | undefined = undefined;
+
+	imageURL?: string = '';
+
+	setFileName(name: string) {
+		this.fileName = name;
+		let tmp = name.match(/(?<=_).+/); // match name after first '_', eg: 'beef' from 'jump_beef'
+		this.shortName = tmp ? tmp[0].replace('_', ' ') : '';
+	}
+
+	getFileName(): string {
+		return this.fileName;
+	}
+
+	getTfId(): string {
+		return this.fileName.replace('_', '-');
+	}
+}
+
 export const nullPlayer: Player = Object.freeze(new Player());
 
 export const BracketOptions = ['whole', 'upper', 'lower'] as const;
@@ -126,7 +143,7 @@ export type Overlay = {
 	bestOf: number;
 	leftPlayer: Player;
 	rightPlayer: Player;
-	map: Map;
+	map: TFMap;
 	stage: string;
 	class: TFClass;
 	bracket: BracketOption;
@@ -135,7 +152,7 @@ export type Overlay = {
 export type Items = {
 	players: Player[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	maps: MapsInfo<any>;
+	maps: TFMap[];
 	stages: Array<string>;
 	bracket: Bracket8 | Bracket4;
 };
@@ -351,7 +368,7 @@ export const defaultSettings: Settings = {
 	enablePOVGuide: false,
 	useShortMapNames: true,
 	tfWebSocketToken: '',
-	overlayScene: '',
+	overlayScene: 'MatchOverlay',
 	obsWsIp: '',
 	obsWsPw: '',
 	steamApiKey: ''
@@ -361,7 +378,7 @@ export const defaultOverlay: Overlay = {
 	bestOf: 3,
 	leftPlayer: new Player(),
 	rightPlayer: new Player(),
-	map: { fileName: '', shortName: '', ID: '' },
+	map: new TFMap(),
 	stage: '',
 	class: 'soldier',
 	bracket: 'whole'
@@ -369,7 +386,7 @@ export const defaultOverlay: Overlay = {
 
 export const defaultItems: Items = {
 	players: [nullPlayer],
-	maps: { null: { fileName: '', shortName: '', ID: '' } },
+	maps: [],
 	stages: defaultStages,
 	bracket: defaultBracket8
 };

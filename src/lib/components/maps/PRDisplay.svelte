@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { settings, items, overlay, type Map } from '$lib/storage.svelte';
+	import { settings, items, overlay, type TFMap } from '$lib/storage.svelte';
 	import { fade } from 'svelte/transition';
 	import { getFiltersStyle } from '$lib/filters.svelte';
 	import { pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
@@ -20,7 +20,7 @@
 		return pickActor == playerA ? 'A' : pickActor == playerB ? 'B' : null;
 	}
 
-	function displayMapPick(map: Map, pickedMaps: { mapID: string; steamID3: string }[]) {
+	function displayMapPick(map: TFMap, pickedMaps: { mapID: string; steamID3: string }[]) {
 		// console.log(`displayMapPick(${map}, ${pickedMaps} length ${pickedMaps.length})`);
 		if (pickedMaps.length == 0) {
 			return '';
@@ -28,13 +28,13 @@
 
 		let mapIndex: number | null = null;
 		for (let i = 0; i < pickedMaps.length; i++) {
-			if (pickedMaps[i].mapID == map.ID) {
+			if (pickedMaps[i].mapID == map.getTfId()) {
 				// console.log(`pickedMaps[${i}]: ${pickedMaps[i].mapID}`);
 				mapIndex = i;
 				break;
 			}
 		}
-		// console.log(`map: ${map.ID}`);
+		// console.log(`map: ${map.getTfId()}`);
 		// console.log(`mapIndex: ${mapIndex}`);
 
 		if (mapIndex == null || mapIndex < 0) {
@@ -54,16 +54,19 @@
 </script>
 
 <section>
-	{#each Object.entries(items.current.maps) as [key, map], i (i)}
-		{#if key !== 'null'}
-			{@render Map(key, map)}
+	{#each items.current.maps as map, i (i)}
+		{#if map.getFileName() !== 'null'}
+			{@render Map(map)}
 		{/if}
 	{/each}
 </section>
 
-{#snippet Map(key: string, map: Map)}
-	{@const left = overlay.current.leftPlayer.tempusPrs![key] ?? { rank: 0, time: '' }}
-	{@const right = overlay.current.rightPlayer.tempusPrs![key] ?? { rank: 0, time: '' }}
+{#snippet Map(map: TFMap)}
+	{@const left = overlay.current.leftPlayer.tempusPrs![map.getFileName()] ?? { rank: 0, time: '' }}
+	{@const right = overlay.current.rightPlayer.tempusPrs![map.getFileName()] ?? {
+		rank: 0,
+		time: ''
+	}}
 	{@const leftWinner = left!.rank < right!.rank}
 
 	<div
@@ -82,7 +85,7 @@
 			class="absolute top-0 right-0 w-full p-2 text-center {settings.current.font}"
 			style:filter={getFiltersStyle()}
 		>
-			{settings.current.useShortMapNames ? key : map.fileName}
+			{settings.current.useShortMapNames ? map.shortName : map.getFileName()}
 		</h1>
 
 		<!-- gradient light -->

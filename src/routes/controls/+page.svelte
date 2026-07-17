@@ -5,7 +5,6 @@
 	import Checkbox from '$lib/components/controls/Checkbox.svelte';
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
 	import Player from '$lib/components/controls/Player.svelte';
-	import MapInput from '$lib/components/controls/MapInput.svelte';
 	import RangeInput from '$lib/components/controls/RangeInput.svelte';
 	import { getFiltersStyle } from '$lib/filters.svelte';
 	import {
@@ -39,6 +38,7 @@
 	import { obsConnect, setScene } from '$lib/websockets/obs/ws-obs';
 	import { onMount } from 'svelte';
 	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
+	import AddMap from '$lib/components/controls/AddMap.svelte';
 
 	$effect(() => {
 		if (settings.current.overlayScene) {
@@ -83,7 +83,7 @@
 <!-- items -->
 <Accordion title="items">
 	<AddPlayer />
-	<MapInput />
+	<AddMap />
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
@@ -265,7 +265,7 @@
 	<span>map</span>
 	<RadioInputs
 		name="maps"
-		opts={Object.values(items.current.maps)}
+		opts={items.current.maps}
 		labelkey={settings.current.useShortMapNames ? 'shortName' : 'fileName'}
 		bind:value={overlay.current.map}
 		log={true}

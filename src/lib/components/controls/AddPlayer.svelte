@@ -32,6 +32,7 @@
 
 		player = result as Player;
 
+		// get steam pfp
 		let response = await fetch('/api/steam/GetPlayerSummaries', {
 			method: 'POST',
 			body: JSON.stringify({ id: player.steamID }),
@@ -45,8 +46,6 @@
 			player.avatarURL = steamPlayer.avatarfull;
 		}
 		player = { ...player };
-
-		return;
 	}
 
 	async function searchPlayers(queryTerm: string) {
@@ -84,6 +83,18 @@
 		isOpen = false;
 	}
 
+	async function onSearch(queryTerm: string) {
+		fetched = false;
+		if (queryTerm) {
+			if (queryTerm.includes('_')) {
+				await fetchPlayerByTempusID(parseInt(queryTerm));
+			}
+			if (!fetched) {
+				searchPlayers(queryTerm);
+			}
+		}
+	}
+
 	function clear() {
 		player = new Player();
 		queryTerm = '';
@@ -112,20 +123,13 @@
 				id="tempus-id"
 				placeholder="tempus id or name"
 				onkeyup={(e) => {
-					const value = (e.target as HTMLInputElement).value;
-					queryTerm = value;
+					queryTerm = (e.target as HTMLInputElement).value;
 				}}
 			/>
 			<button
 				class="button col-span-4 max-w-30 justify-self-center border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
 				onclick={() => {
-					if (queryTerm) {
-						if (!queryTerm.match(/[^0-9]/g)) {
-							fetchPlayerByTempusID(parseInt(queryTerm));
-						} else {
-							searchPlayers(queryTerm);
-						}
-					}
+					onSearch(queryTerm);
 				}}>fetch</button
 			>
 		</div>
@@ -133,23 +137,27 @@
 		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
 
 		{#if searchResults.length > 1}
-			<div class="col-span-3">tempus id</div>
-			<div class="col-span-9">name</div>
-			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-		{/if}
-		{#each searchResults as searchResult, i (i)}
-			<div class="col-span-3">{searchResult.id}</div>
-			<div class="col-span-6">{searchResult.name}</div>
-			<button
-				class="button col-span-3 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-				onclick={() => {
-					fetchPlayerByTempusID(searchResult.id);
-					searchResults = [];
-				}}>select</button
-			>
-		{/each}
+			<div class="col-span-full grid grid-cols-12 gap-2">
+				<div class="col-span-3">tempus id</div>
+				<div class="col-span-6">name</div>
 
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+
+				{#each searchResults as searchResult, i (i)}
+					<div class="col-span-3">{searchResult.id}</div>
+					<div class="col-span-6">{searchResult.name}</div>
+					<button
+						class="button col-span-3 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+						onclick={() => {
+							fetchPlayerByTempusID(searchResult.id);
+							searchResults = [];
+						}}>select</button
+					>
+				{/each}
+
+				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+			</div>
+		{/if}
 
 		{#if fetched}
 			<label for="name" class="col-span-6">name</label>
