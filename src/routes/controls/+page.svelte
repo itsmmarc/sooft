@@ -169,33 +169,6 @@
                                 </div> -->
 			</div>
 		</Accordion>
-		<Accordion title="steam api" defaultstate="closed">
-			<div class="flex gap-2">
-				<label for="input-steam-api">key: </label>
-				<a
-					class="col-span-1"
-					aria-label="flag-preview"
-					href="https://steamcommunity.com/dev/apikey"
-					target="_blank"
-				>
-					<span class="icon-[mdi--question-mark]"></span>
-				</a>
-				<input
-					type="password"
-					class="input w-60"
-					id="input-steam-api"
-					value={settings.current.steamApiKey}
-					onchange={(e) => {
-						let target = e.target as HTMLInputElement;
-						settings.current.steamApiKey = target.value;
-					}}
-				/>
-				<button
-					class="button button-unselected hover:button-selected"
-					onclick={() => console.log('placebo button :)')}>connect</button
-				>
-			</div>
-		</Accordion>
 	</section>
 </Accordion>
 <!-- settings -->
