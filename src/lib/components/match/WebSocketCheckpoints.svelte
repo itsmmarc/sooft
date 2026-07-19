@@ -87,7 +87,7 @@
 					/>
 				{/if}
 			</div>
-			<hr class="col-span-full m-2 h-0.5 border-none bg-obs-padding" />
+			<hr class="hr" />
 		</div>
 
 		<!-- cps -->

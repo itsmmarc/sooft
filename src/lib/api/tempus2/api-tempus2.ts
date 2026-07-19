@@ -1,5 +1,6 @@
 import { items } from '$lib/storage.svelte';
 import { Player, TFMap } from '$lib/types';
+import { TFMapMethods } from '$lib/util';
 import { convertSteamId } from '$lib/util';
 import _ from 'underscore';
 import { TempusPlaza } from '../tempusplaza/api-tempusplaza';
@@ -55,7 +56,8 @@ export namespace Tempus2 {
 		}
 		data = data as Tempus2.MapFullOverview2;
 
-		map.setFileName(data.map_info.name);
+		map.fileName = data.map_info.name;
+		map.shortName = TFMapMethods.fileNameToShortName(data.map_info.name);
 
 		map.mapZoneId = data.zones.map[0].id;
 
@@ -70,7 +72,7 @@ export namespace Tempus2 {
 
 		map.authors = data.authors;
 
-		map.imageURL = TempusPlaza.getImageUrl(map.getFileName());
+		map.imageURL = TempusPlaza.getImageUrl(map.fileName);
 
 		return map;
 	}

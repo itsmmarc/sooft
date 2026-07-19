@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PopOver from './PopOver.svelte';
 	import { items } from '$lib/storage.svelte';
 	import { TFMap } from '$lib/types';
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
@@ -7,7 +8,6 @@
 
 	type Error = { state: boolean; msg: string };
 
-	let isOpen = $state(false);
 	let queryTerm = $state('');
 	let searchResults: Tempus2.MapInfo[] = $state([]);
 	let fetched = $state(false);
@@ -15,6 +15,7 @@
 	let error = $state({
 		invalidMapName: { state: false, msg: 'error: invalid map name' } as Error
 	});
+	let popoverState: 'open' | 'closed' = $state('closed');
 
 	async function fetchMapByName(mapName: string) {
 		error.invalidMapName.state = false;
@@ -39,7 +40,7 @@
 	function addMap(map: TFMap) {
 		let errorFound = false;
 
-		if (!map.getFileName()) {
+		if (!map.fileName) {
 			error.invalidMapName.state = true;
 			errorFound = true;
 		}
@@ -52,7 +53,9 @@
 		console.log('added map:');
 		console.log(map);
 
-		isOpen = false;
+		popoverState = 'closed';
+
+		clear();
 	}
 
 	async function onSearch(queryTerm: string) {
@@ -75,18 +78,8 @@
 	}
 </script>
 
-<button
-	class="button w-2/5 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-	onclick={() => {
-		clear();
-		isOpen = true;
-	}}>add map</button
->
-
-{#if isOpen}
-	<section
-		class="absolute z-50 grid h-fit w-full grid-cols-12 gap-y-1 self-center border-2 bg-obs-content p-2"
-	>
+<PopOver title="add map" bind:state={popoverState} clearfn={clear}>
+	<section class="grid grid-cols-12 gap-2">
 		<div class="col-span-full flex gap-2">
 			<label for="map-name" class="col-span-4">search</label>
 			<input
@@ -99,26 +92,26 @@
 				}}
 			/>
 			<button
-				class="button col-span-4 max-w-30 justify-self-center border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				class="button col-span-4 max-w-30 justify-self-center"
 				onclick={() => {
 					onSearch(queryTerm);
 				}}>fetch</button
 			>
 		</div>
 
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 
 		{#if searchResults.length >= 1}
 			<div class="col-span-full grid grid-cols-12 gap-2">
 				<div class="col-span-3">image</div>
 				<div class="col-span-6">name</div>
 
-				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="hr" />
 
 				{#each searchResults as searchResult, i (i)}
 					<div class="col-span-3">
 						<img
-							src={TempusPlaza.getImageUrl(searchResult.name)}
+							src={TempusPlaza.getImageUrl(searchResult.name, 'medium')}
 							alt=""
 							class="size-12 w-full rounded-xl object-cover object-center"
 							draggable="false"
@@ -126,7 +119,7 @@
 					</div>
 					<div class="col-span-6">{searchResult.name}</div>
 					<button
-						class="button col-span-3 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+						class="button col-span-3"
 						onclick={() => {
 							fetchMapByName(searchResult.name);
 							searchResults = [];
@@ -134,16 +127,28 @@
 					>
 				{/each}
 
-				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="hr" />
 			</div>
 		{/if}
 
 		{#if fetched}
+			<label for="file-name" class="col-span-6">file name</label>
+			<input
+				class="input col-span-4"
+				type="text"
+				id="file-name"
+				placeholder="jump_"
+				value={map.fileName}
+				onkeyup={(e) => {
+					const value = (e.target as HTMLInputElement).value;
+					map.fileName = value;
+				}}
+			/>
 			<label for="short-name" class="col-span-6">short name</label>
 			<input
 				class="input col-span-4"
 				type="text"
-				id="name"
+				id="short-name"
 				placeholder="name"
 				value={map.shortName}
 				onkeyup={(e) => {
@@ -174,12 +179,10 @@
 				}}
 			/>
 
-			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-		{/if}
+			<hr class="hr" />
 
-		{#if fetched}
 			<button
-				class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				class="button col-span-6"
 				// value=""
 				onclick={() => {
 					addMap(map);
@@ -194,12 +197,5 @@
 				{/if}
 			{/each}
 		</div>
-
-		<button
-			class="button-remove absolute top-0 right-2"
-			onclick={() => {
-				isOpen = false;
-			}}>✖</button
-		>
 	</section>
-{/if}
+</PopOver>

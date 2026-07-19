@@ -6,7 +6,7 @@
 	import WebSocketTimer from '$lib/components/match/WebSocketTimer.svelte';
 	import { pickedMaps, timer } from '$lib/websockets/tf/ws-tf.svelte';
 	import { csToTime } from '$lib/websockets/tf/ws-tf.svelte';
-	import Flag from '$lib/components/Flag.svelte';
+	import Flag from '$lib/components/util/Flag.svelte';
 
 	function getPlayerFromPickActor(steamID3: string): Player | null {
 		const playerA = overlay.current.leftPlayer.steamID3;

@@ -35,7 +35,7 @@
 	<!-- svelte-ignore a11y_consider_explicit_label -->
 	<div class="flex justify-center self-center">
 		<button
-			class="button rounded-r-none border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+			class="button rounded-r-none"
 			onclick={() => {
 				updateScore(overlay.current[sideKey].score - 1);
 			}}><span class="icon-[mdi--minus] align-middle"></span></button

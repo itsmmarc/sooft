@@ -2,6 +2,7 @@
 	import kofi_symbol from '$lib/assets/kofi_symbol.svg';
 	import Accordion from '$lib/components/controls/Accordion.svelte';
 	import Button from '$lib/components/controls/Button.svelte';
+
 	import Checkbox from '$lib/components/controls/Checkbox.svelte';
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
 	import Player from '$lib/components/controls/Player.svelte';
@@ -41,6 +42,8 @@
 	import { onMount } from 'svelte';
 	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
 	import AddMap from '$lib/components/controls/AddMap.svelte';
+	import ManagePlayers from '$lib/components/controls/ManagePlayers.svelte';
+	import ManageMaps from '$lib/components/controls/ManageMaps.svelte';
 
 	$effect(() => {
 		if (settings.current.overlayScene) {
@@ -49,7 +52,7 @@
 	});
 </script>
 
-<span class="self-center">sooft controls</span>
+<span class="self-center">jtoo controls</span>
 
 <!-- links -->
 <div class="absolute right-4 flex flex-row-reverse gap-1">
@@ -60,22 +63,12 @@
 		<img class="size-8" src={kofi_symbol} alt="" />
 	</a>
 	<!-- svelte-ignore a11y_consider_explicit_label -->
-	<a class="opacity-50 hover:opacity-100" href="https://github.com/itsmmarc/sooft" target="_blank">
+	<a class="opacity-50 hover:opacity-100" href="https://github.com/itsmmarc/jtoo" target="_blank">
 		<span class="icon-[mdi--github] size-8 text-white"></span>
 	</a>
 </div>
 
 <!-- presets -->
-<div class="relative m-2 flex w-full max-w-lg justify-center gap-4 self-center">
-	<button
-		class="button-remove"
-		onclick={() => {
-			fullReset();
-			clearTimer();
-			clearPicksAndBans();
-		}}>full settings reset</button
-	>
-</div>
 <div class="relative m-2 flex w-full max-w-lg justify-center gap-4 self-center">
 	<button class="button-remove" onclick={() => clearTimer()}>clear timers and checkpoints</button>
 	<button class="button-remove" onclick={() => clearPicksAndBans()}>clear map picks and bans</button
@@ -85,7 +78,9 @@
 <!-- items -->
 <Accordion title="items">
 	<AddPlayer />
+	<ManagePlayers />
 	<AddMap />
+	<ManageMaps />
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
@@ -199,7 +194,7 @@
 		</div>
 	</div>
 
-	<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+	<hr class="hr" />
 
 	<Checkbox desc="use moving background" setting="enableMovingBG" />
 	<Checkbox desc="use short map names" setting="useShortMapNames" />
@@ -230,7 +225,7 @@
 <!-- players -->
 <div class="flex w-full max-w-lg justify-evenly self-center">
 	<Player side="left" />
-	<hr class="mx-2 mb-2 h-32 w-1 self-end border-none bg-obs-padding" />
+	<hr class="hr" />
 	<Player side="right" />
 </div>
 

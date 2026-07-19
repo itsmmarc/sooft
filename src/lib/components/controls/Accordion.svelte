@@ -29,5 +29,5 @@
 			{@render children()}
 		</div>
 	{/if}
-	<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+	<hr class="hr" />
 </div>

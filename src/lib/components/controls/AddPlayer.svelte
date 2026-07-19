@@ -1,16 +1,19 @@
 <script lang="ts">
+	import PopOver from './PopOver.svelte';
 	import { items } from '$lib/storage.svelte';
 	import { Player } from '$lib/types';
 	import { Tempus2 } from '$lib/api/tempus2/api-tempus2';
-	import { type Steam } from '$lib/api/steam/api-steam-types';
+	import { Steam } from '$lib/api/steam/api-steam';
 	import _ from 'underscore';
-	import Flag from '../Flag.svelte';
+	import Flag from '../util/Flag.svelte';
+	import { convertSteamId } from '$lib/util';
 
 	type Error = { state: boolean; msg: string };
 
-	let isOpen = $state(false);
+	let popoverState: 'open' | 'closed' = $state('closed');
 	let queryTerm = $state('');
-	let searchResults: Tempus2.PlayerInfo[] = $state([]);
+	let searchResultsTempus: Tempus2.PlayerInfo[] = $state([]);
+	let searchResultsSteam: Steam.PlayerSummary[] | null = $state([]);
 	let fetched = $state(false);
 	let player = $state(new Player());
 	let error = $state({
@@ -33,24 +36,17 @@
 
 		player = result as Player;
 
-		// get steam pfp
-		let response = await fetch('/api/steam/GetPlayerSummaries', {
-			method: 'POST',
-			body: JSON.stringify({ id: player.steamID }),
-			headers: { 'Content-Type': 'application/json' }
-		});
+		player.avatarURL = await Steam.fetchPlayerAvatar(player.steamID);
 
-		let data = await response.json();
-		if (data) {
-			let steamPlayer: Steam.PlayerSummary = data.response;
-			player.avatarURL = steamPlayer.avatarfull;
-		}
 		player = { ...player };
 	}
 
 	async function searchPlayers(queryTerm: string) {
 		fetched = false;
-		searchResults = await Tempus2.searchPlayers(queryTerm);
+		searchResultsTempus = await Tempus2.searchPlayers(queryTerm);
+		let ids: string[] = [];
+		searchResultsTempus.forEach((r) => ids.push(r.steamid));
+		searchResultsSteam = await Steam.fetchPlayerSummaries(ids);
 	}
 
 	function addPlayer(player: Player) {
@@ -80,7 +76,9 @@
 		console.log('added player:');
 		console.log(player);
 
-		isOpen = false;
+		popoverState = 'closed';
+
+		clear();
 	}
 
 	async function onSearch(queryTerm: string) {
@@ -98,23 +96,14 @@
 	function clear() {
 		player = new Player();
 		queryTerm = '';
-		searchResults = [];
+		searchResultsTempus = [];
+		searchResultsSteam = [];
 		fetched = false;
 	}
 </script>
 
-<button
-	class="button w-2/5 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-	onclick={() => {
-		clear();
-		isOpen = true;
-	}}>add player</button
->
-
-{#if isOpen}
-	<section
-		class="absolute z-50 grid h-fit w-full grid-cols-12 gap-y-1 self-center border-2 bg-obs-content p-2"
-	>
+<PopOver title="add player" bind:state={popoverState} clearfn={clear}>
+	<section class="grid grid-cols-12 gap-2">
 		<div class="col-span-full flex gap-2">
 			<label for="tempus-id" class="col-span-4">search</label>
 			<input
@@ -127,35 +116,46 @@
 				}}
 			/>
 			<button
-				class="button col-span-4 max-w-30 justify-self-center border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				class="button col-span-4 max-w-30 justify-self-center"
 				onclick={() => {
 					onSearch(queryTerm);
 				}}>fetch</button
 			>
 		</div>
 
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 
-		{#if searchResults.length >= 1}
-			<div class="col-span-full grid grid-cols-12 gap-2">
-				<div class="col-span-3">tempus id</div>
+		{#if searchResultsTempus.length > 0 && searchResultsSteam && searchResultsSteam.length > 0}
+			<div class="col-span-full grid grid-cols-12 items-center gap-2">
+				<div class="col-span-3"></div>
 				<div class="col-span-6">name</div>
 
-				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="hr" />
 
-				{#each searchResults as searchResult, i (i)}
-					<div class="col-span-3">{searchResult.id}</div>
+				{#each searchResultsTempus as searchResult, i (i)}
+					{@const searchResultSteam = searchResultsSteam.filter(
+						(r) => r.steamid == convertSteamId(searchResult.steamid, 'SteamID64')
+					)[0]}
+					<div class="col-span-3">
+						<img
+							src={searchResultSteam.avatarmedium}
+							alt=""
+							class="col-span-2 row-span-2 size-12 rounded-xl object-cover object-center"
+							draggable="false"
+						/>
+					</div>
 					<div class="col-span-6">{searchResult.name}</div>
 					<button
-						class="button col-span-3 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+						class="button col-span-3"
 						onclick={() => {
 							fetchPlayerByTempusID(searchResult.id);
-							searchResults = [];
+							searchResultsTempus = [];
+							searchResultsSteam = [];
 						}}>select</button
 					>
 				{/each}
 
-				<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="hr" />
 			</div>
 		{/if}
 
@@ -177,7 +177,7 @@
 				<img
 					src={player.avatarURL}
 					alt=""
-					class="col-span-2 row-span-2 mt-2 ml-2 size-12 rounded-xl object-cover object-center"
+					class="col-span-2 row-span-2 size-16 rounded-xl object-cover object-center"
 					draggable="false"
 				/>
 			{/if}
@@ -217,7 +217,7 @@
 			/>
 			<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
 
-			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+			<hr class="hr" />
 
 			<label class="col-span-6" for="bestRun">best run</label>
 			<input
@@ -254,12 +254,10 @@
 				}}
 			></textarea>
 
-			<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-		{/if}
+			<hr class="hr" />
 
-		{#if fetched}
 			<button
-				class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+				class="button col-span-6"
 				// value=""
 				onclick={() => {
 					addPlayer(player);
@@ -274,12 +272,5 @@
 				{/if}
 			{/each}
 		</div>
-
-		<button
-			class="button-remove absolute top-0 right-2"
-			onclick={() => {
-				isOpen = false;
-			}}>✖</button
-		>
 	</section>
-{/if}
+</PopOver>

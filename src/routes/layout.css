@@ -41,7 +41,7 @@
 
 @layer components {
 	.button {
-		@apply min-w-6 rounded-sm border-b-2 px-0.5 text-center text-black;
+		@apply min-w-6 rounded-sm border-b-2 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 text-center text-black hover:bg-ctp-lavender/85;
 	}
 
 	.button-container {
@@ -62,6 +62,9 @@
 
 	.input {
 		@apply rounded-sm border-b-2 border-ctp-lavender-950 bg-obs-padding/75 px-1 outline-none focus:border-ctp-lavender focus:bg-obs-padding;
+	}
+	.hr {
+		@apply col-span-12 mt-2 mb-2 h-0.5 w-full border-none bg-obs-padding;
 	}
 }
 

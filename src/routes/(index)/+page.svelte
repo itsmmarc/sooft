@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
+
 	let copied = $state({});
 	let baseUrl = page.url;
 </script>
@@ -12,7 +13,7 @@
 	</div>
 	<div>
 		<h2 class="mb-2 text-center text-3xl">Docks</h2>
-		<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 		<ul class="mb-5 list-decimal italic">
 			<li>in OBS, navigate to Docks -> Custom Browser Docks</li>
 			<li>add controls url</li>
@@ -21,7 +22,7 @@
 	</div>
 	<div>
 		<h2 class="mb-2 text-center text-3xl">Overlays</h2>
-		<hr class="mb-0.5 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 		<ul class="m-auto mb-5 w-fit list-decimal italic">
 			<li>in OBS, navigate to Sources -> Add Source -> Browser</li>
 			<li>add overlay url</li>

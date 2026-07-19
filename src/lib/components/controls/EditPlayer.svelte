@@ -1,53 +1,70 @@
 <script lang="ts">
+	import PopOver from './PopOver.svelte';
 	import { items } from '$lib/storage.svelte';
 	import { Player } from '$lib/types';
-	import * as _ from 'underscore';
-	import Flag from '../Flag.svelte';
-
-	function replacePlayer() {
-		let index: number = _.findIndex(items.current.players, (p) => _.isEqual(p, oldPlayer));
-		items.current.players[index] = player;
-		items.current.players = [...items.current.players];
-		clearErrors();
-	}
-	function clearChanges() {
-		player = { ...oldPlayer };
-	}
-	function clearErrors() {
-		error.noName.state = false;
-		error.noSteamID.state = false;
-	}
+	import _ from 'underscore';
+	import Flag from '../util/Flag.svelte';
 
 	type Error = { state: boolean; msg: string };
-	type Props = {
-		p: Player;
-	};
 
-	let { p }: Props = $props();
-	const oldPlayer = $derived(p);
-	let player = $state(p);
-	let isOpen = $state(false);
+	type Props = { player: Player };
+	let { player }: Props = $props();
+
+	let popoverState: 'open' | 'closed' = $state('closed');
 	let error = $state({
+		invalidTempusID: { state: false, msg: 'error: invalid tempus id' } as Error,
 		noName: { state: false, msg: 'error: no name entered' } as Error,
-		noSteamID: { state: false, msg: 'error: no steam id3 entered' } as Error
+		noSteamID3: { state: false, msg: 'error: no steamid3 entered' } as Error,
+		noSteamID64: { state: false, msg: 'error: no steamid64 entered' } as Error,
+		noTempusID: { state: false, msg: 'error: no tempus id entered' } as Error
 	});
+
+	function savePlayer(player: Player) {
+		let errorFound = false;
+		if (!player.name) {
+			error.noName.state = true;
+			errorFound = true;
+		}
+		if (!player.tempusID) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+		if (!player.steamID) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+		if (!player.steamID3) {
+			error.noSteamID3.state = true;
+			errorFound = true;
+		}
+
+		if (errorFound) {
+			return;
+		}
+
+		for (let p of items.current.players) {
+			if (p.tempusID == player.tempusID) {
+				p = { ...player };
+				break;
+			}
+		}
+
+		items.current.players = [...items.current.players];
+		console.log('saved player:');
+		console.log(player);
+
+		popoverState = 'closed';
+	}
 </script>
 
-<button
-	class="button w-7/8 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
-	onclick={() => (isOpen = true)}>edit player</button
->
-
-{#if isOpen}
-	<section
-		class="absolute top-0 left-0 z-50 grid w-full grid-cols-12 gap-y-1 self-center border-2 bg-obs-content p-2"
-	>
-		<label for="name" class="col-span-6">name*</label>
+<PopOver title="edit player" bind:state={popoverState} container={false}>
+	<section class="grid grid-cols-12 gap-2">
+		<label for="name" class="col-span-6">name</label>
 		<input
 			class="input col-span-4"
 			type="text"
 			id="name"
-			placeholder="*name"
+			placeholder="name"
 			value={player.name}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
@@ -59,7 +76,7 @@
 			<img
 				src={player.avatarURL}
 				alt=""
-				class="col-span-2 row-span-3 mt-2 ml-2 size-12 rounded-xl object-cover object-center"
+				class="col-span-2 row-span-2 size-16 rounded-xl object-cover object-center"
 				draggable="false"
 			/>
 		{/if}
@@ -74,20 +91,6 @@
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
 				player.avatarURL = value;
-				player = { ...player };
-			}}
-		/>
-
-		<label for="tag" class="col-span-6">tag</label>
-		<input
-			class="input col-span-4"
-			type="text"
-			id="tag"
-			placeholder="tag"
-			value={player.tag}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.tag = value;
 			}}
 		/>
 
@@ -109,96 +112,11 @@
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
 				player.flag = value;
-				player = { ...player };
 			}}
 		/>
 		<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
 
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-
-		<label for="tempusid" class="col-span-6">tempus ID</label>
-		<input
-			class="input col-span-4"
-			type="text"
-			id="tempusid"
-			value={player.tempusID}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.tempusID = +value;
-			}}
-		/>
-
-		<label for="steamid3" class="col-span-6">steam ID3*</label>
-		<input
-			class="input remove-arrow col-span-4"
-			type="number"
-			id="steamid3"
-			value={player.steamID3}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.steamID3 = parseInt(value);
-			}}
-		/>
-
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-
-		<label class="col-span-6" for="rank-overall">overall rank</label>
-		<input
-			class="remove-arrow input col-span-4"
-			type="number"
-			pattern="[0-9]"
-			id="rank-overall"
-			placeholder="overall"
-			value={player.rank?.overall}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.rank!.overall = parseInt(value);
-			}}
-		/>
-
-		<label class="col-span-6" for="rank-soldier">soldier rank</label>
-		<input
-			class="remove-arrow input col-span-4"
-			type="number"
-			pattern="[0-9]"
-			id="rank-soldier"
-			placeholder="soldier"
-			value={player.rank?.soldier}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.rank!.soldier = parseInt(value);
-			}}
-		/>
-
-		<label class="col-span-6" for="rank-demoman">demo rank</label>
-		<input
-			class="remove-arrow input col-span-4"
-			type="number"
-			pattern="[0-9]"
-			id="rank-demoman"
-			placeholder="demoman"
-			value={player.rank?.demoman}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.rank!.demoman = parseInt(value);
-			}}
-		/>
-
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-
-		<label class="col-span-6" for="numWRs">number of WRs</label>
-		<input
-			class="remove-arrow input col-span-4"
-			type="number"
-			pattern="[0-9]"
-			id="numWRs"
-			placeholder="numWRs"
-			value={player.WRs}
-			onkeyup={(e) => {
-				const value = (e.target as HTMLInputElement).value;
-				player.WRs = parseInt(value);
-			}}
-		/>
+		<hr class="hr" />
 
 		<label class="col-span-6" for="bestRun">best run</label>
 		<input
@@ -206,7 +124,6 @@
 			type="text"
 			id="bestRun"
 			placeholder="best run"
-			value={player.bestRun}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
 				player.bestRun = value;
@@ -219,7 +136,6 @@
 			type="text"
 			id="favouriteMap"
 			placeholder="favourite map"
-			value={player.favouriteMap}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
 				player.favouriteMap = value;
@@ -227,72 +143,26 @@
 		/>
 
 		<label class="col-span-6" for="note">note</label>
-		<input
-			class="input col-span-4"
-			type="text"
+		<textarea
+			class="input col-span-4 h-16 align-text-top"
 			id="note"
 			placeholder="note"
-			value={player.note}
 			onkeyup={(e) => {
 				const value = (e.target as HTMLInputElement).value;
 				player.note = value;
 			}}
-		/>
+		></textarea>
 
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
-
-		{#each items.current.maps as map, i (i)}
-			{#if !map.getFileName()}
-				<label class="col-span-6" for="pr-{map.shortName}-time">pr {map.shortName}</label>
-				<input
-					class="input col-span-3 mr-1"
-					type="text"
-					id="pr-{map}-time"
-					placeholder="0:00.00"
-					value={player.tempusPrs![map.getFileName()].time ?? ''}
-					onkeyup={(e) => {
-						const value = (e.target as HTMLInputElement).value;
-						player.tempusPrs![map.getFileName()].time = value;
-					}}
-				/>
-				<input
-					class="input remove-arrow col-span-1"
-					type="number"
-					id="pr-{map}-rank"
-					placeholder="rank"
-					value={player.tempusPrs![map.getFileName()].rank ?? ''}
-					onkeyup={(e) => {
-						const value = (e.target as HTMLInputElement).value;
-						player.tempusPrs![map.getFileName()].rank = parseInt(value);
-					}}
-				/>
-			{/if}
-		{/each}
-
-		<hr class="col-span-12 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 
 		<button
-			class="button col-span-6 border-ctp-lavender-950/50 bg-ctp-lavender/35 px-2 hover:bg-ctp-lavender/85"
+			class="button col-span-6"
 			// value=""
 			onclick={() => {
-				let errorFound = false;
-				if (!player.name) {
-					error.noName.state = true;
-					errorFound = true;
-				}
-				if (!player.steamID3) {
-					error.noSteamID.state = true;
-					errorFound = true;
-				}
-
-				if (errorFound) {
-					return;
-				}
-
-				replacePlayer();
-				isOpen = false;
-			}}>update player</button
+				savePlayer(player);
+			}}>save player</button
 		>
+
 		<div class="col-span-6 flex flex-col">
 			{#each Object.values(error) as e, i (i)}
 				{#if e.state}
@@ -300,13 +170,5 @@
 				{/if}
 			{/each}
 		</div>
-
-		<button
-			class="button-remove absolute top-0 right-2"
-			onclick={() => {
-				clearChanges();
-				isOpen = false;
-			}}>✖</button
-		>
 	</section>
-{/if}
+</PopOver>

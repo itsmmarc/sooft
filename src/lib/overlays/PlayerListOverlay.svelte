@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { getFiltersStyle } from '$lib/filters.svelte';
-	import { items, overlay, type Player } from '$lib/storage.svelte';
-	import { settings } from '$lib/storage.svelte';
+	import { items, overlay, settings } from '$lib/storage.svelte';
+	import { Player } from '$lib/types';
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
-	import Flag from '$lib/components/Flag.svelte';
+	import Flag from '$lib/components/util/Flag.svelte';
 
 	const drawBG: boolean = !page.url.searchParams.has('nobg');
 </script>
@@ -39,11 +39,11 @@
 		{@render Header('world records')}
 		{@render Header('top times')}
 
-		<hr class="col-span-6 mb-0 h-0.5 w-full border-none bg-obs-padding" />
+		<hr class="hr" />
 		{#each items.current.players as player, i (i)}
 			{#if player.name}
 				{@render Player(player)}
-				<hr class="col-span-6 mb-0 h-0.5 w-full border-none bg-obs-padding" />
+				<hr class="hr" />
 			{/if}
 		{/each}
 	</ul>

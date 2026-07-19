@@ -84,7 +84,7 @@ export class Player {
 	favouriteMap: string = '';
 }
 
-type MapRun = {
+export type MapRun = {
 	tempusID: number;
 	rank: number;
 	duration: number;
@@ -104,20 +104,6 @@ export class TFMap {
 	runs: { soldier: MapRun[]; demoman: MapRun[] } = { soldier: [], demoman: [] };
 
 	imageURL?: string = '';
-
-	setFileName(name: string) {
-		this.fileName = name;
-		let tmp = name.match(/(?<=_).+/); // match name after first '_', eg: 'beef' from 'jump_beef'
-		this.shortName = tmp ? tmp[0].replace('_', ' ') : '';
-	}
-
-	getFileName(): string {
-		return this.fileName;
-	}
-
-	getTfId(): string {
-		return this.fileName.replace('_', '-');
-	}
 }
 
 export const nullPlayer: Player = Object.freeze(new Player());

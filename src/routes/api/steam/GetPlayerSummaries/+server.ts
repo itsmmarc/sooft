@@ -1,28 +1,21 @@
-import { Player, settings } from '$lib/storage.svelte';
-import { type Steam } from '$lib/api/steam/api-steam-types';
-import { convertSteamId } from '$lib/util';
+import { Steam } from '$lib/api/steam/api-steam';
 import { json } from '@sveltejs/kit';
 import { STEAM_API_KEY } from '$env/static/private';
 
 export async function POST(request: Request) {
 	const body = await request.request.json();
-
 	console.log('body:');
 	console.log(body);
 
-	// if (!('id' in body)) {
-	// 	return json({}, { status: 400 });
-	// }
+	if (!('steamids' in body)) {
+		return json({}, { status: 400 });
+	}
 
-	let id = body.id;
+	let ids = body.steamids;
 
-	// if (!id || typeof id != 'string') {
-	// 	return json({}, { status: 400 });
-	// }
+	let idsStr: string = ids.join(',');
 
-	id = convertSteamId(id, 'SteamID64');
-
-	const endpoint = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${id}`;
+	const endpoint = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${idsStr}`;
 	console.log(endpoint);
 	const response = await fetch(endpoint);
 	let data: Steam.GetPlayerSummaries = await response.json();
@@ -34,7 +27,5 @@ export async function POST(request: Request) {
 		return null;
 	}
 
-	const p = data.response.players[0];
-
-	return json({ response: p }, { status: 201 });
+	return json({ response: data.response.players }, { status: 201 });
 }

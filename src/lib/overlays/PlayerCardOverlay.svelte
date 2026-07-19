@@ -4,7 +4,7 @@
 	import { settings } from '$lib/storage.svelte';
 	import { fade } from 'svelte/transition';
 	import PRDisplay from '$lib/components/maps/PRDisplay.svelte';
-	import Flag from '$lib/components/Flag.svelte';
+	import Flag from '$lib/components/util/Flag.svelte';
 </script>
 
 <!-- isolated border filter -->

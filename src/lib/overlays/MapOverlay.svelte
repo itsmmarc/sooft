@@ -3,7 +3,8 @@
 	import { settings, items } from '$lib/storage.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import { messages, pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
-	import { type PickBansSessionStateEvent } from '$lib/tf-websocket-types';
+	import { type PickBansSessionStateEvent } from '$lib/websockets/tf/ws-tf-types';
+	import { TFMapMethods } from '$lib/util';
 
 	let progress = $state(0);
 	let increment = 0;
@@ -86,11 +87,13 @@
 	{/if}
 	<section class="flex flex-wrap justify-around gap-5 p-10">
 		{#each items.current.maps as map, i (i)}
-			{#if !map.getFileName()}
+			{#if !map.fileName}
 				{@const m: PickBansSessionStateEvent | null = messages.current.mapPicks ? messages.current.mapPicks : null}
 				<div class="@container relative mb-2 h-65 w-130 text-4xl">
 					{#if m && 'session' in m && m.session}
-						{@const pickNum = pickedMaps.current.findIndex((p) => p.mapID == map.getTfId())}
+						{@const pickNum = pickedMaps.current.findIndex(
+							(p) => p.mapID == TFMapMethods.fileNameToTfId(map.fileName)
+						)}
 						{#if pickNum >= 0}
 							<div class="absolute right-6 bottom-4 text-5xl">{pickNum + 1}</div>
 						{/if}
@@ -124,7 +127,7 @@
 						class="absolute top-0 right-0 w-full p-2 text-center"
 						style:filter={getFiltersStyle()}
 					>
-						{settings.current.useShortMapNames ? map.shortName : map.getFileName()}
+						{settings.current.useShortMapNames ? map.shortName : map.fileName}
 					</h1>
 					<div
 						class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-t from-transparent via-transparent to-[#000000d0]"
