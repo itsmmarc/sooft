@@ -1,17 +1,6 @@
 import { items } from './storage.svelte';
 import { Player } from './types';
 
-export namespace TFMapMethods {
-	export function fileNameToShortName(fileName: string) {
-		let tmp = fileName.match(/(?<=_).+/); // match name after first '_', eg: 'beef' from 'jump_beef'
-		return tmp ? tmp[0].replace('_', ' ') : '';
-	}
-
-	export function fileNameToTfId(fileName: string): string {
-		return fileName.replace('_', '-');
-	}
-}
-
 export function getPlayer(name?: string, steamID3?: number, players?: Player[]): Player {
 	if (name) {
 		return players

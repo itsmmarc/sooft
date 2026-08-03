@@ -57,6 +57,15 @@ export class TFMap {
 	runs: { soldier: MapRun[]; demoman: MapRun[] } = { soldier: [], demoman: [] };
 
 	imageURL?: string = '';
+
+	static fileNameToShortName(fileName: string) {
+		let tmp = fileName.match(/(?<=_).+/); // match name after first '_', eg: 'beef' from 'jump_beef'
+		return tmp ? tmp[0].replace('_', ' ') : '';
+	}
+
+	static fileNameToTfId(fileName: string): string {
+		return fileName.replace('_', '-');
+	}
 }
 
 export const nullPlayer: Player = Object.freeze(new Player());

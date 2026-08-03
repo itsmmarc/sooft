@@ -4,7 +4,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import { messages, pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
 	import { type PickBansSessionStateEvent } from '$lib/websockets/tf/ws-tf-types';
-	import { TFMapMethods } from '$lib/util';
+	import { TFMap } from '$lib/types';
 
 	let progress = $state(0);
 	let increment = 0;
@@ -92,13 +92,13 @@
 				<div class="@container relative mb-2 h-65 w-130 text-4xl">
 					{#if m && 'session' in m && m.session}
 						{@const pickNum = pickedMaps.current.findIndex(
-							(p) => p.mapID == TFMapMethods.fileNameToTfId(map.fileName)
+							(p) => p.mapID == TFMap.fileNameToTfId(map.fileName)
 						)}
 						{#if pickNum >= 0}
 							<div class="absolute right-6 bottom-4 text-5xl">{pickNum + 1}</div>
 						{/if}
 						{#each m.session.history as step, i (i)}
-							{#if step.mapId == TFMapMethods.fileNameToTfId(map.fileName)}
+							{#if step.mapId == TFMap.fileNameToTfId(map.fileName)}
 								<div
 									transition:fade|global
 									class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-tr

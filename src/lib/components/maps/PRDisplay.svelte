@@ -4,7 +4,6 @@
 	import { fade } from 'svelte/transition';
 	import { getFiltersStyle } from '$lib/filters.svelte';
 	import { csToTime, pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
-	import { TFMapMethods } from '$lib/util';
 
 	function getPlayerFromPickActor(steamID3: string): string | null {
 		const playerA = overlay.current.leftPlayer.steamID3;
@@ -24,7 +23,7 @@
 
 		let mapIndex: number | null = null;
 		for (let i = 0; i < pickedMaps.length; i++) {
-			if (pickedMaps[i].mapID == TFMapMethods.fileNameToTfId(map.fileName)) {
+			if (pickedMaps[i].mapID == TFMap.fileNameToTfId(map.fileName)) {
 				mapIndex = i;
 				break;
 			}
