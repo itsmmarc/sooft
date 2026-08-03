@@ -1,35 +1,21 @@
 <script lang="ts">
 	import kofi_symbol from '$lib/assets/kofi_symbol.svg';
-	import Accordion from '$lib/components/controls/Accordion.svelte';
-	import Button from '$lib/components/controls/Button.svelte';
 
+	import Accordion from '$lib/components/controls/Accordion.svelte';
 	import Checkbox from '$lib/components/controls/Checkbox.svelte';
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
-	import Player from '$lib/components/controls/Player.svelte';
 	import RangeInput from '$lib/components/controls/RangeInput.svelte';
+	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
+	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
+	import AddMap from '$lib/components/controls/AddMap.svelte';
+	import ManagePlayers from '$lib/components/controls/ManagePlayers.svelte';
+	import ManageMaps from '$lib/components/controls/ManageMaps.svelte';
+	import AddTournament from '$lib/components/controls/AddTournament.svelte';
+
+	import Player from '$lib/components/controls/Player.svelte';
 	import { getFiltersStyle } from '$lib/filters.svelte';
-	import {
-		settings,
-		overlay,
-		items,
-		defaultStages,
-		defaultSettings,
-		fullReset
-	} from '$lib/storage.svelte';
-	import {
-		type Settings,
-		type TFClass,
-		TFClasses,
-		Fonts,
-		type Font,
-		MonoFonts,
-		type MonoFont,
-		BracketOptions,
-		type BracketOption,
-		OverlayScenes,
-		type OverlayScene
-	} from '$lib/types';
-	import { slide } from 'svelte/transition';
+	import { settings, overlay, items, defaultStages, defaultSettings } from '$lib/storage.svelte';
+	import { Fonts, MonoFonts, OverlayScenes } from '$lib/types';
 	import * as _ from 'underscore';
 	import {
 		clearPicksAndBans,
@@ -37,13 +23,9 @@
 		initializeTfWebSocket,
 		wsState
 	} from '$lib/websockets/tf/ws-tf.svelte';
-	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
+
 	import { obsConnect, setScene } from '$lib/websockets/obs/ws-obs';
-	import { onMount } from 'svelte';
-	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
-	import AddMap from '$lib/components/controls/AddMap.svelte';
-	import ManagePlayers from '$lib/components/controls/ManagePlayers.svelte';
-	import ManageMaps from '$lib/components/controls/ManageMaps.svelte';
+	import ManageTournaments from '$lib/components/controls/ManageTournaments.svelte';
 
 	$effect(() => {
 		if (settings.current.overlayScene) {
@@ -81,12 +63,22 @@
 	<ManagePlayers />
 	<AddMap />
 	<ManageMaps />
+	<AddTournament />
+	<ManageTournaments />
+
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>
 
 <Accordion title="scenes">
 	<span>scene</span>
 	<RadioInputs name="scenes" opts={[...OverlayScenes]} bind:value={settings.current.overlayScene} />
+	<span>tournament</span>
+	<RadioInputs
+		name="tournaments"
+		opts={[...items.current.tournaments]}
+		labelkey={['info', 'name']}
+		bind:value={overlay.current.tournament}
+	/>
 </Accordion>
 
 <Accordion title="connections">
@@ -235,22 +227,9 @@
 	<span>map</span>
 	<RadioInputs
 		name="maps"
-		opts={items.current.maps}
+		opts={overlay.current.tournament.maps}
 		labelkey={settings.current.useShortMapNames ? 'shortName' : 'fileName'}
 		bind:value={overlay.current.map}
-		log={true}
-	/>
-
-	<!-- classes -->
-	<span>class</span>
-	<RadioInputs name="classes" opts={[...TFClasses]} bind:value={overlay.current.class} />
-
-	<!-- bracket -->
-	<span>bracket display</span>
-	<RadioInputs
-		name="bracketdisplay"
-		opts={[...BracketOptions]}
-		bind:value={overlay.current.bracket}
 	/>
 
 	<!-- stages -->

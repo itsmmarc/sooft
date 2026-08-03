@@ -11,11 +11,17 @@ export async function POST(request: Request) {
 		return json({}, { status: 400 });
 	}
 
-	let ids = body.steamids;
+	let idParam: string;
 
-	let idsStr: string = ids.join(',');
+	if (typeof body.steamids == 'string') {
+		idParam = body.steamids as string;
+	} else if (Array.isArray(body.steamids)) {
+		idParam = body.steamids.join(',');
+	} else {
+		return json({}, { status: 400 });
+	}
 
-	const endpoint = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${idsStr}`;
+	const endpoint = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${idParam}`;
 	console.log(endpoint);
 	const response = await fetch(endpoint);
 	let data: Steam.GetPlayerSummaries = await response.json();

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { overlay, items } from '$lib/storage.svelte';
 	import PlayerItemList from './PlayerItemList.svelte';
+	import RadioInputs from './RadioInputs.svelte';
 
 	type Props = {
 		side: 'left' | 'right';
@@ -56,7 +57,12 @@
 		{#if items.current.players.length === 0}
 			<span class="text-ctp-text/50">no players..</span>
 		{:else}
-			<PlayerItemList {sideKey} />
+			<RadioInputs
+				name={sideKey + '-player'}
+				opts={overlay.current.tournament.players}
+				labelkey="name"
+				bind:value={overlay.current[sideKey]}
+			/>
 		{/if}
 	</div>
 </div>

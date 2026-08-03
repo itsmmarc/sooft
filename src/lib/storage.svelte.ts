@@ -1,6 +1,13 @@
 import { PersistentState } from '@friendofsvelte/state';
-import { type Items, type Overlay, type Settings, Player, TFMap } from './types';
-import { defaultBracket8 } from './Bracket.svelte';
+import {
+	type Counters,
+	type Items,
+	type Overlay,
+	type Settings,
+	Player,
+	TFMap,
+	Tournament
+} from './types';
 
 export const defaultStages: Array<string> = [
 	'',
@@ -14,6 +21,13 @@ export const defaultStages: Array<string> = [
 	"Loser's Semis",
 	"Loser's Finals"
 ];
+
+export const defaultCounters: Counters = {
+	tournamentId: 0
+};
+
+// counters
+export const counters = new PersistentState('counters', defaultCounters);
 
 export const defaultSettings: Settings = {
 	font: 'font-space-grotesk',
@@ -43,15 +57,14 @@ export const defaultOverlay: Overlay = {
 	rightPlayer: new Player(),
 	map: new TFMap(),
 	stage: '',
-	class: 'soldier',
-	bracket: 'whole'
+	tournament: new Tournament()
 };
 
 export const defaultItems: Items = {
 	players: [new Player()],
 	maps: [new TFMap()],
 	stages: defaultStages,
-	bracket: defaultBracket8
+	tournaments: [new Tournament()]
 };
 
 // overlay settings
@@ -64,7 +77,8 @@ export const overlay = new PersistentState('overlay', defaultOverlay);
 export const items = new PersistentState('items', defaultItems);
 
 export function fullReset() {
+	counters.current = defaultCounters;
 	settings.current = defaultSettings;
 	overlay.current = defaultOverlay;
-	items.current = defaultItems;
+	// items.current = defaultItems;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getFiltersStyle } from '$lib/filters.svelte';
-	import { settings, items } from '$lib/storage.svelte';
+	import { settings, items, overlay } from '$lib/storage.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import { messages, pickedMaps } from '$lib/websockets/tf/ws-tf.svelte';
 	import { type PickBansSessionStateEvent } from '$lib/websockets/tf/ws-tf-types';
@@ -86,7 +86,7 @@
 		<div class="absolute top-0 left-0 size-full bg-black/35"></div>
 	{/if}
 	<section class="flex flex-wrap justify-around gap-5 p-10">
-		{#each items.current.maps as map, i (i)}
+		{#each overlay.current.tournament.maps as map, i (i)}
 			{#if !map.fileName}
 				{@const m: PickBansSessionStateEvent | null = messages.current.mapPicks ? messages.current.mapPicks : null}
 				<div class="@container relative mb-2 h-65 w-130 text-4xl">
@@ -98,7 +98,7 @@
 							<div class="absolute right-6 bottom-4 text-5xl">{pickNum + 1}</div>
 						{/if}
 						{#each m.session.history as step, i (i)}
-							{#if step.mapId == map.getTfId()}
+							{#if step.mapId == TFMapMethods.fileNameToTfId(map.fileName)}
 								<div
 									transition:fade|global
 									class="absolute top-0 right-0 -z-1 h-full w-full rounded-xl bg-linear-to-tr

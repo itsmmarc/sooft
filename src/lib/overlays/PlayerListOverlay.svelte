@@ -35,14 +35,14 @@
 		<li></li>
 		<li></li>
 		{@render Header('name')}
-		{@render Header(`${overlay.current.class} rank`)}
+		{@render Header(`${overlay.current.tournament.info.class} rank`)}
 		{@render Header('world records')}
 		{@render Header('top times')}
 
 		<hr class="hr" />
 		{#each items.current.players as player, i (i)}
 			{#if player.name}
-				{@render Player(player)}
+				{@render PlayerSnippet(player)}
 				<hr class="hr" />
 			{/if}
 		{/each}
@@ -53,7 +53,7 @@
 	<li class="pr-20 italic opacity-60" style:filter={getFiltersStyle()}>{title}</li>
 {/snippet}
 
-{#snippet Player(player: Player)}
+{#snippet PlayerSnippet(player: Player)}
 	<li class="-mt-2 -mb-2">
 		<img
 			in:fade
@@ -64,10 +64,10 @@
 		/>
 	</li>
 	<li class="-mt-2 -mb-2">
-		<Flag code={player.flag} styleclass="text-[6rem] rounded-xl" />
+		<Flag code={player.flag} class="rounded-xl text-[6rem]" />
 	</li>
 	{@render BodyCell(player.name)}
-	{@render BodyCell(player.rank![overlay.current.class].rank.toString())}
+	{@render BodyCell(player.rank![overlay.current.tournament.info.class].rank.toString())}
 	{@render BodyCell(player.WRs.toString())}
 	{@render BodyCell(player.TTs.toString())}
 {/snippet}

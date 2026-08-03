@@ -36,8 +36,7 @@ export namespace Tempus2 {
 		player.rank.demoman = _.pick(data.class_rank_info[4], ['points', 'rank', 'title']);
 		player.rank.overall = { ..._.pick(data.rank_info, ['points', 'rank']), title: null };
 
-		player.TTs = data.top_stats.map ? data.top_stats.map.count : 0;
-		player.TTs = data.wr_stats.map ? data.wr_stats.map.count : 0;
+		player = await TempusPlaza.fetchPlayerRecords(player);
 
 		return player;
 	}

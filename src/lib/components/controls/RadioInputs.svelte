@@ -1,19 +1,45 @@
 <script lang="ts">
-	import { overlay } from '$lib/storage.svelte';
 	import _ from 'underscore';
 
 	type Props = {
 		opts: any[];
-		labelkey?: string;
+		labelkey?: string | string[];
 		name: string;
 		value: any;
 		log?: boolean;
+		onchange?: Function;
 	};
-	let { opts, labelkey, name, log = false, value = $bindable() }: Props = $props();
+	let { opts, labelkey, name, log = false, value = $bindable(), onchange }: Props = $props();
 
 	function onSelect() {
-		if (log) {
-			console.log(`${name}: ${value}`);
+		if (log) console.log(`${name}: ${value}`);
+
+		if (onchange) onchange();
+	}
+
+	function getOptionLabel(opt: any, labelkey: string | string[] | undefined) {
+		if (typeof labelkey == 'undefined') {
+			return opt;
+		}
+
+		if (typeof labelkey == 'string' && labelkey in opt) {
+			return opt[labelkey];
+		}
+
+		if (labelkey.constructor === Array) {
+			const numKeys = labelkey.length;
+			let optLabel = { ...opt };
+
+			for (let i = 0; i < numKeys; i++) {
+				if (!(labelkey[i] in optLabel)) {
+					return opt;
+				}
+				optLabel = optLabel[labelkey[i]];
+
+				if (i + 1 == numKeys) {
+					return optLabel;
+				}
+			}
 		}
 	}
 </script>
@@ -25,7 +51,7 @@
 </div>
 
 {#snippet RadioButton(opt: any)}
-	{@const optlabel = labelkey && labelkey in opt ? opt[labelkey] : opt}
+	{@const optlabel = getOptionLabel(opt, labelkey)}
 	<label
 		class="button button-unselected flex cursor-pointer flex-col select-none has-checked:border-ctp-lavender-950 has-checked:bg-ctp-lavender
                 {labelkey && _.isEqual(opt, value)

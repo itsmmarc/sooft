@@ -5,6 +5,7 @@
 	import { fade } from 'svelte/transition';
 	import PRDisplay from '$lib/components/maps/PRDisplay.svelte';
 	import Flag from '$lib/components/util/Flag.svelte';
+	import { Player, Tournament } from '$lib/types';
 </script>
 
 <!-- isolated border filter -->
@@ -33,7 +34,7 @@
 </section>
 
 {#snippet PlayerCard(sideKey: 'leftPlayer' | 'rightPlayer')}
-	{@const player = overlay.current[sideKey]}
+	{@const player: Player = overlay.current[sideKey]}
 
 	{#if player.name !== '' && player != null}
 		<section class="relative z-10 flex h-full w-2/5 flex-col flex-wrap gap-4">
@@ -61,7 +62,7 @@
 					<!-- flag -->
 					{#if settings.current.enableFlags && player.flag}
 						{#key player.flag}
-							<Flag code={player.flag} styleclass="flex h-fit w-fit rounded-xl text-[8rem]" />
+							<Flag code={player.flag} class="flex h-fit w-fit rounded-xl text-[8rem]" />
 						{/key}
 					{/if}
 				</div>
@@ -87,8 +88,8 @@
 					style:filter={getFiltersStyle()}
 				>
 					<ul class="flex h-150 w-full flex-col gap-6">
-						<li class="">{player.WRs} world records</li>
-						<li class="">{player.TTs} top times</li>
+						<li class="">{player.WRs[overlay.current.tournament.info.class]} world records</li>
+						<li class="">{player.TTs[overlay.current.tournament.info.class]} top times</li>
 						<li class="italic opacity-60">best run</li>
 						<li class="-mt-6">{player.bestRun}</li>
 						<li class="italic opacity-60">favourite map</li>
@@ -109,17 +110,10 @@
 
 				<!-- ranks -->
 				<div class="h-fit w-80 text-center" style:filter={getFiltersStyle()}>
-					{#if overlay.current.class == 'overall'}
-						<h1 class=" text-3xl">overall rank</h1>
-						<div class="text-8xl font-bold">#{player.rank.overall.rank}</div>
-						<h1 class="text-3xl">soldier rank</h1>
-						<div class="text-8xl font-bold">#{player.rank.soldier.rank}</div>
-						<h1 class="text-3xl">demo rank</h1>
-						<div class="text-8xl font-bold">#{player.rank.demoman.rank}</div>
-					{:else}
-						<h1 class="text-3xl">{overlay.current.class} rank</h1>
-						<div class="text-8xl font-bold">#{player.rank![overlay.current.class].rank}</div>
-					{/if}
+					<h1 class="text-3xl">{overlay.current.tournament.info.class} rank</h1>
+					<div class="text-8xl font-bold">
+						#{player.rank![overlay.current.tournament.info.class].rank}
+					</div>
 				</div>
 			</div>
 		</section>

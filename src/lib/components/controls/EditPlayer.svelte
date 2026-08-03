@@ -114,7 +114,7 @@
 				player.flag = value;
 			}}
 		/>
-		<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
+		<Flag code={player.flag} class="col-span-1 ml-4 rounded text-[1.5rem]" />
 
 		<hr class="hr" />
 

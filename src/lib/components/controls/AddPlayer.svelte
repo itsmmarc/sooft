@@ -100,11 +100,14 @@
 		searchResultsSteam = [];
 		fetched = false;
 	}
+
+	type Props = { container?: boolean };
+	let { container = true }: Props = $props();
 </script>
 
-<PopOver title="add player" bind:state={popoverState} clearfn={clear}>
+<PopOver title="add player" bind:state={popoverState} clearfn={clear} {container}>
 	<section class="grid grid-cols-12 gap-2">
-		<div class="col-span-full flex gap-2">
+		<form class="col-span-full flex gap-2" onsubmit={() => onSearch(queryTerm)}>
 			<label for="tempus-id" class="col-span-4">search</label>
 			<input
 				class="remove-arrow input col-span-4"
@@ -115,13 +118,8 @@
 					queryTerm = (e.target as HTMLInputElement).value;
 				}}
 			/>
-			<button
-				class="button col-span-4 max-w-30 justify-self-center"
-				onclick={() => {
-					onSearch(queryTerm);
-				}}>fetch</button
-			>
-		</div>
+			<button type="submit" class="button col-span-4 max-w-30 justify-self-center">fetch</button>
+		</form>
 
 		<hr class="hr" />
 
@@ -136,6 +134,7 @@
 					{@const searchResultSteam = searchResultsSteam.filter(
 						(r) => r.steamid == convertSteamId(searchResult.steamid, 'SteamID64')
 					)[0]}
+					{console.log(searchResultSteam)}
 					<div class="col-span-3">
 						<img
 							src={searchResultSteam.avatarmedium}
@@ -215,7 +214,7 @@
 					player.flag = value;
 				}}
 			/>
-			<Flag code={player.flag} styleclass="text-[1.5rem] rounded col-span-1 ml-4" />
+			<Flag code={player.flag} class="col-span-1 ml-4 rounded text-[1.5rem]" />
 
 			<hr class="hr" />
 

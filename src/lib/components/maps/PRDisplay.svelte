@@ -47,7 +47,8 @@
 	function getPlayerPrs(map: TFMap) {
 		console.log(`running player prs for ${map.fileName}-------------`);
 		console.log(map.runs.soldier);
-		let tfclass: 'soldier' | 'demoman' = overlay.current.class == 'demoman' ? 'demoman' : 'soldier';
+		let tfclass: 'soldier' | 'demoman' =
+			overlay.current.tournament.info.class == 'demoman' ? 'demoman' : 'soldier';
 		let result: { left: MapRun | undefined; right: MapRun | undefined } = {
 			left: undefined,
 			right: undefined
@@ -116,14 +117,14 @@
 				class="absolute bottom-0 left-0 p-2 {leftWinner ? 'font-black' : 'opacity-75'}"
 				style:filter={getFiltersStyle()}
 			>
-				{csToTime(prs.left.duration)}
+				{csToTime(prs.left.duration * 100)}
 			</div>
 			<!-- right time -->
 			<div
 				class="absolute right-0 bottom-0 p-2 text-right {!leftWinner ? 'font-black' : 'opacity-75'}"
 				style:filter={getFiltersStyle()}
 			>
-				{csToTime(prs.right.duration)}
+				{csToTime(prs.right.duration * 100)}
 			</div>
 
 			<!-- map image -->

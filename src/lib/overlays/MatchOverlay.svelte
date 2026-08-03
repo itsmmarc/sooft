@@ -175,7 +175,7 @@
 		<!-- flag -->
 		{#if settings.current.enableFlags && flag}
 			{#key flag}
-				<Flag code={flag} styleclass="flex h-fit w-fit rounded-xl text-[6rem]" />
+				<Flag code={flag} class="flex h-fit w-fit rounded-xl text-[6rem]" />
 			{/key}
 		{/if}
 		{#if settings.current.enableAvatars && avatarURL}
