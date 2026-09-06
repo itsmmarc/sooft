@@ -11,15 +11,18 @@
 	} from '$lib/types';
 	import _ from 'underscore';
 	import RadioInputs from './RadioInputs.svelte';
-	import AddPlayer from './AddPlayer.svelte';
-	import AddMap from './AddMap.svelte';
+	import ImportPlayer from './ImportPlayer.svelte';
+	import ImportMap from './ImportMap.svelte';
 	import { Bracket4, Bracket8 } from '$lib/Bracket.svelte';
 	import AddBracket from './AddBracket.svelte';
 	import DraggablePlayerList from '../DraggablePlayerList.svelte';
 
 	type Error = { state: boolean; msg: string };
 
-	let maxPlayers = $state(999);
+	type Props = { tournament: Tournament };
+	let { tournament }: Props = $props();
+
+	let maxPlayers = $derived(getMaxPlayers(tournament.format));
 	let playerSeachTerm = $state('');
 	let mapSeachTerm = $state('');
 	let playerSearchResults: Player[] = $state([]);
@@ -38,6 +41,10 @@
 		}
 	});
 
+	function getMaxPlayers(format: '' | 'DoubleElim4Player' | 'DoubleElim8Player' | 'AllOutRoyale') {
+		return format == 'DoubleElim4Player' ? 4 : format == 'DoubleElim8Player' ? 8 : 999;
+	}
+
 	function saveTournament(tournament: Tournament) {
 		let errorFound = false;
 		if (!tournament.info.name) {
@@ -49,13 +56,15 @@
 			return;
 		}
 
-		for (let existingTournament of items.current.tournaments) {
-			if (existingTournament.id == tournament.id) {
-				existingTournament = tournament;
+		for (let i of items.current.tournaments.keys()) {
+			if (items.current.tournaments[i].id == tournament.id) {
+				items.current.tournaments[i] = tournament;
 				console.log('updated tournament:');
 				console.log(tournament);
 			}
 		}
+
+		items.current.tournaments = [...items.current.tournaments];
 
 		popoverState = 'closed';
 
@@ -84,7 +93,7 @@
 		mapSearchResults = items.current.maps.filter((m) => m.fileName.includes(searchTerm));
 	}
 
-	function addPlayer(player: Player) {
+	function importplayer(player: Player) {
 		if (tournament.players.length < maxPlayers) {
 			tournament = {
 				...tournament,
@@ -94,7 +103,7 @@
 		}
 		error.maxPlayers.state = true;
 	}
-	function addMap(map: TFMap) {
+	function importMap(map: TFMap) {
 		console.log('adding map to tournament');
 		console.log(map);
 		tournament = {
@@ -141,9 +150,6 @@
 			return b.tier[tfClass] - a.tier[tfClass];
 		});
 	}
-
-	type Props = { tournament: Tournament };
-	let { tournament }: Props = $props();
 </script>
 
 <PopOver title="edit tournament" bind:state={popoverState} clearfn={clear} container={false}>
@@ -257,7 +263,7 @@
 							<button
 								class="button col-span-3"
 								onclick={() => {
-									addPlayer(player);
+									importplayer(player);
 
 									playerSearchResults = [];
 									playerSeachTerm = '';
@@ -269,7 +275,7 @@
 			{/if}
 
 			<div class="col-span-full">
-				<AddPlayer container={false} oncreate={(player) => addPlayer(player)} />
+				<ImportPlayer container={false} oncreate={(player) => importplayer(player)} />
 			</div>
 		{/if}
 
@@ -323,7 +329,7 @@
 						<button
 							class="button col-span-3"
 							onclick={() => {
-								addMap(map);
+								importMap(map);
 								mapSearchResults = [];
 								mapSeachTerm = '';
 								console.log(tournament.maps);
@@ -335,7 +341,7 @@
 		{/if}
 
 		<div class="col-span-full">
-			<AddMap container={false} oncreate={(map) => addMap(map)} />
+			<ImportMap container={false} oncreate={(map) => importMap(map)} />
 		</div>
 
 		{#each tournament.maps as map, i (i)}

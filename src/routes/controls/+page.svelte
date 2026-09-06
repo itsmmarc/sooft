@@ -6,8 +6,8 @@
 	import ItemInput from '$lib/components/controls/ItemInput.svelte';
 	import RangeInput from '$lib/components/controls/RangeInput.svelte';
 	import RadioInputs from '$lib/components/controls/RadioInputs.svelte';
-	import AddPlayer from '$lib/components/controls/AddPlayer.svelte';
-	import AddMap from '$lib/components/controls/AddMap.svelte';
+	import Importplayer from '$lib/components/controls/ImportPlayer.svelte';
+	import ImportMap from '$lib/components/controls/ImportMap.svelte';
 	import ManagePlayers from '$lib/components/controls/ManagePlayers.svelte';
 	import ManageMaps from '$lib/components/controls/ManageMaps.svelte';
 	import AddTournament from '$lib/components/controls/AddTournament.svelte';
@@ -59,12 +59,14 @@
 
 <!-- items -->
 <Accordion title="items">
-	<AddPlayer />
-	<ManagePlayers />
-	<AddMap />
-	<ManageMaps />
-	<AddTournament />
-	<ManageTournaments />
+	<div class="grid w-full grid-cols-2">
+		<Importplayer />
+		<ManagePlayers />
+		<ImportMap />
+		<ManageMaps />
+		<AddTournament />
+		<ManageTournaments />
+	</div>
 
 	<ItemInput placeholder="add stage" item="stages" />
 </Accordion>

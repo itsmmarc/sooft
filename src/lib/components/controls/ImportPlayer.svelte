@@ -48,7 +48,7 @@
 		searchResultsSteam = await Steam.fetchPlayerSummaries(ids);
 	}
 
-	function addPlayer(player: Player) {
+	function importplayer(player: Player) {
 		let errorFound = false;
 		if (!player.name) {
 			error.noName.state = true;
@@ -120,7 +120,7 @@
 	let { container = true, oncreate }: Props = $props();
 </script>
 
-<PopOver title="add player" bind:state={popoverState} clearfn={clear} {container}>
+<PopOver title="import player" bind:state={popoverState} clearfn={clear} {container}>
 	<section class="grid grid-cols-12 gap-2">
 		<form class="col-span-full flex gap-2" onsubmit={() => onSearch(queryTerm)}>
 			<label for="tempus-id" class="col-span-4">search</label>
@@ -274,7 +274,7 @@
 				class="button col-span-6"
 				// value=""
 				onclick={() => {
-					addPlayer(player);
+					importplayer(player);
 				}}>add player</button
 			>
 		{/if}

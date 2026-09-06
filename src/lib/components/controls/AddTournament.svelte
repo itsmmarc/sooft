@@ -11,11 +11,10 @@
 	} from '$lib/types';
 	import _ from 'underscore';
 	import RadioInputs from './RadioInputs.svelte';
-	import AddPlayer from './AddPlayer.svelte';
-	import AddMap from './AddMap.svelte';
+	import Importplayer from './ImportPlayer.svelte';
+	import Importmap from './ImportMap.svelte';
 	import { Bracket4, Bracket8 } from '$lib/Bracket.svelte';
 	import AddBracket from './AddBracket.svelte';
-	import DraggableList from '../DraggableList.svelte';
 	import DraggablePlayerList from '../DraggablePlayerList.svelte';
 
 	type Error = { state: boolean; msg: string };
@@ -108,7 +107,7 @@
 		mapSearchResults = items.current.maps.filter((m) => m.fileName.includes(searchTerm));
 	}
 
-	function addPlayer(player: Player) {
+	function importplayer(player: Player) {
 		if (tournament.players.length < maxPlayers) {
 			tournament = {
 				...tournament,
@@ -118,7 +117,7 @@
 		}
 		error.maxPlayers.state = true;
 	}
-	function addMap(map: TFMap) {
+	function importMap(map: TFMap) {
 		console.log('adding map to tournament');
 		console.log(map);
 		tournament = {
@@ -285,7 +284,7 @@
 								<button
 									class="button col-span-3"
 									onclick={() => {
-										addPlayer(player);
+										importplayer(player);
 
 										playerSearchResults = [];
 										playerSeachTerm = '';
@@ -297,7 +296,7 @@
 				{/if}
 
 				<div class="col-span-full">
-					<AddPlayer container={false} oncreate={(player) => addPlayer(player)} />
+					<Importplayer container={false} oncreate={(player) => importplayer(player)} />
 				</div>
 			{/if}
 
@@ -351,7 +350,7 @@
 							<button
 								class="button col-span-3"
 								onclick={() => {
-									addMap(map);
+									importMap(map);
 									mapSearchResults = [];
 									mapSeachTerm = '';
 									console.log(tournament.maps);
@@ -363,7 +362,7 @@
 			{/if}
 
 			<div class="col-span-full">
-				<AddMap container={false} oncreate={(map) => addMap(map)} />
+				<Importmap container={false} oncreate={(map) => importMap(map)} />
 			</div>
 
 			{#each tournament.maps as map, i (i)}

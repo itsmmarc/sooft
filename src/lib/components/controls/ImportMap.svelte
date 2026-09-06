@@ -37,7 +37,7 @@
 		searchResults = await Tempus2.searchMaps(queryTerm);
 	}
 
-	function addMap(map: TFMap) {
+	function importMap(map: TFMap) {
 		let errorFound = false;
 
 		if (!map.fileName) {
@@ -94,7 +94,7 @@
 	let { container = true, oncreate }: Props = $props();
 </script>
 
-<PopOver title="add map" bind:state={popoverState} clearfn={clear} {container}>
+<PopOver title="import map" bind:state={popoverState} clearfn={clear} {container}>
 	<section class="grid grid-cols-12 gap-2">
 		<form class="col-span-full flex gap-2" onsubmit={() => onSearch(queryTerm)}>
 			<label for="map-name" class="col-span-4">search</label>
@@ -196,7 +196,7 @@
 				class="button col-span-6"
 				// value=""
 				onclick={() => {
-					addMap(map);
+					importMap(map);
 				}}>add map</button
 			>
 		{/if}
