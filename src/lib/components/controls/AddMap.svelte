@@ -49,11 +49,24 @@
 			return;
 		}
 
-		items.current.maps = [...items.current.maps, map];
+		let mapAlreadyExists = false;
+		for (let existingMap of items.current.maps) {
+			if (existingMap.fileName == map.fileName) {
+				existingMap = map;
+				mapAlreadyExists = true;
+				items.current.maps = [...items.current.maps];
+				break;
+			}
+		}
+
+		if (!mapAlreadyExists) items.current.maps = [...items.current.maps, map];
+
 		console.log('added map:');
 		console.log(map);
 
 		popoverState = 'closed';
+
+		if (oncreate) oncreate(map);
 
 		clear();
 	}
@@ -77,8 +90,8 @@
 		fetched = false;
 	}
 
-	type Props = { container?: boolean };
-	let { container = true }: Props = $props();
+	type Props = { container?: boolean; oncreate?: (map: TFMap) => void };
+	let { container = true, oncreate }: Props = $props();
 </script>
 
 <PopOver title="add map" bind:state={popoverState} clearfn={clear} {container}>

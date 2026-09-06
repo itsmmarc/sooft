@@ -45,7 +45,7 @@ export const defaultSettings: Settings = {
 	enablePOVGuide: false,
 	useShortMapNames: true,
 	tfWebSocketToken: '',
-	overlayScene: 'MatchOverlay',
+	overlayScene: 'MatchScene',
 	obsWsIp: '',
 	obsWsPw: '',
 	steamApiKey: ''

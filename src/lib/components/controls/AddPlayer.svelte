@@ -6,7 +6,6 @@
 	import { Steam } from '$lib/api/steam/api-steam';
 	import _ from 'underscore';
 	import Flag from '../util/Flag.svelte';
-	import { convertSteamId } from '$lib/util';
 
 	type Error = { state: boolean; msg: string };
 
@@ -72,11 +71,27 @@
 			return;
 		}
 
-		items.current.players = [...items.current.players, player];
-		console.log('added player:');
-		console.log(player);
+		let playerAlreadyExists = false;
+		for (let existingPlayer of items.current.players) {
+			if (existingPlayer.tempusID == player.tempusID) {
+				existingPlayer = player;
+				playerAlreadyExists = true;
+				items.current.players = [...items.current.players];
+				console.log('update player:');
+				console.log(player);
+				break;
+			}
+		}
+
+		if (!playerAlreadyExists) {
+			items.current.players = [...items.current.players, player];
+			console.log('added player:');
+			console.log(player);
+		}
 
 		popoverState = 'closed';
+
+		if (oncreate) oncreate(player);
 
 		clear();
 	}
@@ -101,8 +116,8 @@
 		fetched = false;
 	}
 
-	type Props = { container?: boolean };
-	let { container = true }: Props = $props();
+	type Props = { container?: boolean; oncreate?: (player: Player) => void };
+	let { container = true, oncreate }: Props = $props();
 </script>
 
 <PopOver title="add player" bind:state={popoverState} clearfn={clear} {container}>
@@ -132,7 +147,7 @@
 
 				{#each searchResultsTempus as searchResult, i (i)}
 					{@const searchResultSteam = searchResultsSteam.filter(
-						(r) => r.steamid == convertSteamId(searchResult.steamid, 'SteamID64')
+						(r) => r.steamid == Steam.convertSteamId(searchResult.steamid, 'SteamID64')
 					)[0]}
 					{console.log(searchResultSteam)}
 					<div class="col-span-3">

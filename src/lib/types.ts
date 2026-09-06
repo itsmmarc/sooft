@@ -6,9 +6,7 @@ import { counters } from './storage.svelte';
 export const TFClasses = ['demoman', 'soldier', 'overall'] as const;
 export type TFClass = (typeof TFClasses)[number];
 
-export type Rank = {
-	[key in TFClass]: { points: number; rank: number; title: string | null };
-};
+export type Rank = { points: number; rank: number; title: string | null };
 
 export const Divisions = ['wood', 'steel', 'bronze', 'silver', 'gold', 'platinum', 'diamond'];
 export type Division = (typeof Divisions)[number];
@@ -25,13 +23,13 @@ export class Player {
 	flag: string = '';
 	pr: string = ''; // only used for manual PRs
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	rank: Rank = {
+	rank: Record<TFClass, Rank> = {
 		demoman: { points: 0, rank: 0, title: '' },
 		soldier: { points: 0, rank: 0, title: '' },
 		overall: { points: 0, rank: 0, title: '' }
 	};
-	TTs = { soldier: 0, demoman: 0, overall: 0 };
-	WRs = { soldier: 0, demoman: 0, overall: 0 };
+	TTs: Record<TFClass, number> = { soldier: 0, demoman: 0, overall: 0 };
+	WRs: Record<TFClass, number> = { soldier: 0, demoman: 0, overall: 0 };
 	bestRun: string = '';
 	note: string = '';
 	favouriteMap: string = '';
@@ -47,20 +45,22 @@ export class TFMap {
 	fileName: string = '';
 	shortName: string = '';
 	mapZoneId: number = 0;
-	intendedClass: { soldier: boolean; demoman: boolean } = { soldier: false, demoman: false };
-	tier: { soldier: number; demoman: number } = { soldier: 0, demoman: 0 };
+	intendedClass: Record<Exclude<TFClass, 'overall'>, boolean> = { soldier: false, demoman: false };
+	tier: Record<Exclude<TFClass, 'overall'>, number> = { soldier: 0, demoman: 0 };
 	authors: Tempus2.Author[] = [];
-	worldRecordInfo: { soldier: Tempus2.Run2 | undefined; demoman: Tempus2.Run2 | undefined } = {
+	worldRecordInfo: Record<Exclude<TFClass, 'overall'>, Tempus2.Run2 | undefined> = {
 		soldier: undefined,
 		demoman: undefined
 	};
-	runs: { soldier: MapRun[]; demoman: MapRun[] } = { soldier: [], demoman: [] };
+	runs: Omit<Record<TFClass, MapRun[]>, 'overall'> = { soldier: [], demoman: [] };
 
 	imageURL?: string = '';
 
-	static fileNameToShortName(fileName: string) {
-		let tmp = fileName.match(/(?<=_).+/); // match name after first '_', eg: 'beef' from 'jump_beef'
-		return tmp ? tmp[0].replace('_', ' ') : '';
+	static fileNameToShortName(fileName: string): string {
+		if (fileName == 'jump_') return fileName;
+
+		let tmp = fileName.match(/(?<=_)[^_]+/); // match name after first '_' and before any subsequent '_', eg: 'beef' from 'jump_beef' or 'jump_beef_final'
+		return tmp ? tmp[0].trim() : '';
 	}
 
 	static fileNameToTfId(fileName: string): string {
@@ -159,12 +159,13 @@ export type MonoFont = (typeof MonoFonts)[number];
 
 export const OverlayScenes = [
 	'',
-	'MatchOverlay',
-	'MapOverlay',
-	'BracketOverlay',
-	'PlayerCardOverlay',
-	'PlayerListOverlay',
-	'ThanksOverlay'
+	'MatchScene',
+	'MapScene',
+	'TournamentInfoScene',
+	'BracketScene',
+	'PlayerCardScene',
+	'PlayerListScene',
+	'ThanksScene'
 ] as const;
 export type OverlayScene = (typeof OverlayScenes)[number];
 

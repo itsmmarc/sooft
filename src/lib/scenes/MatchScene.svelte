@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getFiltersStyle } from '$lib/filters.svelte';
-	import { settings, overlay, items, type Player } from '$lib/storage.svelte';
+	import { settings, overlay, items } from '$lib/storage.svelte';
+	import { Player, TFMap } from '$lib/types';
 	import { fade, slide } from 'svelte/transition';
 	import WebSocketCheckpoints from '$lib/components/match/WebSocketCheckpoints.svelte';
 	import WebSocketTimer from '$lib/components/match/WebSocketTimer.svelte';
@@ -100,7 +101,7 @@
 			<span in:fade class="relative right-2 -skew-x-30 px-8 text-3xl text-ctp-text/75"
 				>{settings.current.useShortMapNames
 					? overlay.current.map.shortName
-					: overlay.current.map.getFileName()}</span
+					: overlay.current.map.fileName}</span
 			>
 		{/key}
 	</div>
@@ -110,10 +111,11 @@
 	{#if pickedMaps.current.length > 1}
 		{#each pickedMaps.current as pickedMap, i (i)}
 			{@const player = getPlayerFromPickActor(pickedMap.steamID3)}
-			{@const isCurrent = pickedMap.mapID == overlay.current.map.getTfId()}
+			{@const mapId = TFMap.fileNameToTfId(overlay.current.map.fileName)}
+			{@const isCurrent = pickedMap.mapID == mapId}
 			{@const map = () => {
 				for (const map of items.current.maps) {
-					if (map.getTfId() == pickedMap.mapID) {
+					if (mapId == pickedMap.mapID) {
 						return map;
 					}
 				}
@@ -130,7 +132,7 @@
 						class="absolute top-0 right-0 w-full p-2 text-center {settings.current.font}"
 						style:filter={getFiltersStyle()}
 					>
-						{settings.current.useShortMapNames ? MAP.shortName : MAP.getFileName()}
+						{settings.current.useShortMapNames ? MAP.shortName : MAP.fileName}
 					</h1>
 					{#if player}
 						{#if settings.current.enableAvatars && player.avatarURL}

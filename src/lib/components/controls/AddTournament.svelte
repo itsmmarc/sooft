@@ -119,6 +119,8 @@
 		error.maxPlayers.state = true;
 	}
 	function addMap(map: TFMap) {
+		console.log('adding map to tournament');
+		console.log(map);
 		tournament = {
 			...tournament,
 			maps: sortMaps([...tournament.maps, map], tournament.info.class)
@@ -185,10 +187,13 @@
 							maxPlayers = 8;
 							break;
 						case 'AllOutRoyale':
-						default:
+						case '':
+							console.log(`using not properly implemented tournament format: ${tournament.format}`);
 							tournament.bracket = undefined;
 							maxPlayers = 999;
 							break;
+						default:
+							throw new Error(`Invalid tournament format: ${tournament.format satisfies never}`);
 					}
 				}}
 			/>
@@ -292,7 +297,7 @@
 				{/if}
 
 				<div class="col-span-full">
-					<AddPlayer container={false} />
+					<AddPlayer container={false} oncreate={(player) => addPlayer(player)} />
 				</div>
 			{/if}
 
@@ -358,7 +363,7 @@
 			{/if}
 
 			<div class="col-span-full">
-				<AddMap container={false} />
+				<AddMap container={false} oncreate={(map) => addMap(map)} />
 			</div>
 
 			{#each tournament.maps as map, i (i)}
@@ -402,7 +407,6 @@
 
 			<button
 				class="button col-span-6"
-				// value=""
 				onclick={() => {
 					addTournament(tournament);
 				}}>add tournament</button

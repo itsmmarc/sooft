@@ -1,6 +1,6 @@
 import { items } from '$lib/storage.svelte';
 import { Player, TFMap } from '$lib/types';
-import { convertSteamId } from '$lib/util';
+import { Steam } from '../steam/api-steam';
 import _ from 'underscore';
 import { TempusPlaza } from '../tempusplaza/api-tempusplaza';
 
@@ -27,7 +27,7 @@ export namespace Tempus2 {
 
 		player.tempusID = data.player_info.id;
 		player.steamID = data.player_info.steamid;
-		player.steamID3 = convertSteamId(player.steamID, 'SteamID3') as number;
+		player.steamID3 = Steam.convertSteamId(player.steamID, 'SteamID3') as number;
 		player.name = data.player_info.name;
 		player.flag = data.player_info.country_code.toLocaleLowerCase();
 
